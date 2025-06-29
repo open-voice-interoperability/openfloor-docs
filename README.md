@@ -1,10 +1,10 @@
 <img src="https://github.com/open-voice-interoperability/artwork/blob/main/horizontal/color/Interoperability_Logo_color.png" width="200">
 
-# open-voice-interoperability/openfloor-docs
+# OFP (Open Floor Protocol)
 
 ## Introduction
 
-This repository contains the specification and schemas for the ***Open-Floor*** family of specifications and supporting schemas developed developed by the Open Voice Interoperability Initiative operating within the Linux Foundation AI & Data Foundation. 
+This repository contains the specification and schemas for the ***Open-Floor Protocol*** family of specifications and supporting schemas developed developed by the Voiceinteroperability.ai initiative operating within the Linux Foundation AI & Data Foundation (previously named OVON: Open VOice Network)
 
 The [**specifications**](specifications) folder contains the current normative specifications.  
 The [**schemas**](schemas) folder contains JSON schemas in support of the specifications.
