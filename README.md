@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This repository contains the specification and schemas for the ***Open-Floor Protocol*** family of specifications and supporting schemas developed developed by the Voiceinteroperability.ai initiative operating within the Linux Foundation AI & Data Foundation (previously named OVON: Open VOice Network)
+This repository contains the specification and schemas for the ***Open-Floor Protocol*** family of **Vendor-Independent** specifications and supporting schemas developed developed by the Voiceinteroperability.ai initiative operating within the Linux Foundation AI & Data Foundation (previously named OVON: Open VOice Network)
 
 The [**specifications**](specifications) folder contains the current normative specifications.  
 The [**schemas**](schemas) folder contains JSON schemas in support of the specifications.
