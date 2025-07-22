@@ -114,7 +114,7 @@
                   "bye", 
                   "context",
                   "getManifests", 
-                  "publishManifest", 
+                  "publishManifests", 
                   "findAssistant", 
                   "proposeAssistant",
                   "requestFloor",
@@ -293,14 +293,14 @@
               {
                 "if": {
                   "properties": {
-                    "eventType": { "const": "publishManifest" }
+                    "eventType": { "const": "publishManifests" }
                   },
                   "required": ["eventType"]
                 },
                 "then" : {
                   "properties": { 
                     "parameters" : {
-                      "description": "Parameters for the publishManifest event.",
+                      "description": "Parameters for the publishManifests event.",
                       "type": "object",
                       "properties" : {
                         "servicingManifests": {

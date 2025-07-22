@@ -11,7 +11,7 @@
       },
       "events": [
           { 
-              "eventType": "publishManifest",
+              "eventType": "publishManifests",
               "parameters": {
                     "servicingManifests" : [
                         {
