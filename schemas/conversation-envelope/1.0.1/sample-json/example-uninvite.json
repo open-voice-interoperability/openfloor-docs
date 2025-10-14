@@ -4,7 +4,10 @@
         "version": "1.0.1"
       },
       "conversation": {
-        "id": "someUniqueIdForTheConversation"
+        "id": "someUniqueIdForTheConversation",
+        "currentRoles": {
+          "convener": ["tag:some_Convener.com,2025:"]
+        }
       },
       "sender": {
         "speakerUri": "tag:some_Convener.com,2025:"

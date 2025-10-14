@@ -284,6 +284,10 @@ As shown in Figure 6, the conversation section contains just one piece of mandat
         "conversation": { 
           "id": "jk31050879662407560061859425913208",
 
+          "assignedFloorRoles" : { 
+            "convener" : ["tag:dev.buerokratt.ee,2025:0001"] 
+          },
+
           "conversants" :[
               {      
                 "identification":
@@ -294,7 +298,8 @@ As shown in Figure 6, the conversation section contains just one piece of mandat
                       "conversationalName": "Buerokratt",
                       "department": "Passport Office",
                       "role": "Immigration Specialist",
-                      "synopsis": "Immigration specialist as part of the Beurocrat system."
+                      "synopsis": "Immigration specialist as part of the Beurocrat system.",
+                      "openFloorRoles": {"convener":True}
                   },
                   "persistentState": {
                     "uniqueKey1": { .. object .. },
@@ -316,6 +321,17 @@ The _conversants_ section is optional and if present should contain a list of al
 The _identification_ section should be a copy of the _identification_ section of the agent's manifest as defined in [4].   
 
 The _persistentState_ is optional and consists of key-value pairs where the values can be any arbitrary JSON object.  The purpose of this is to enable agents to persist information that is important to maintaining internal state in the conversation.  Message senders should only add new key-value pairs to their own conversant object.
+
+The _assignedFloorRoles_ dictionary is a record of which conversants have been assigned specific Open-Floor roles by the floor manager. Each role maps to an array of speakerURIs for agents currently assigned that role, with some roles (like convener) having a maximum cardinality of 1. !!! Any agents that are assigned roles must also be listed in the "conversants" section. !!!
+
+Agents advertise their willingness to perform certain roles in the _Identification.openFloorRoles_ section of their manifest.   Roles are assigned to agents by the floor manager. There is no obligation of a floor manager to assign an agent a certain role.  !!! If a role is not defined then this indicates that the floor must provide this role.  !!!   Agents are not limited to fulfilling a single role, they can have any number of roles within a conversation.
+
+The roles that a floor manager can assign are listed below.  The default value of the _Identification.openFloorRoles_ element for each conversant are defined in [[4]](https://github.com/open-voice-interoperability/docs/blob/main/specifications/AssistantManifest/1.0.1/AssistantManifestSpec.md) and repeated below for clarity.   
+
+|Open-Floor Role|Description|Default manifest role|Max Elements|
+|-|-|-|-|
+|`convener`|The agent is acting as floor convener, dealing with invites and floor grant requests|False|1|
+|!!`discovery`!!|The agent is assigned by the floor to be a discovery agent|False|unlimited|
 
 All message handlers should persist the data in this section when replying to a message.  Agents are encouraged to remove themselves from the _conversant_ section when sending a 'bye' event.  It is incumbent on floor managers to also do basic housekeeping on the _conversation_ section.
 
@@ -1327,23 +1343,40 @@ The conversation floor manager retains ultimate responsibility for deciding whic
 
 Open-Floor compliant conversation floor managers (including host browsers) agents must support all normative event types in order to be considered fully compliant.
 
-A simple floor manager will generally forward all events to the intended recipient designated by the _to_ section of each event. If there is no _to_ section it will forward the event to all participants apart from the sender.
+A simple floor manager will process envelopes in the order that they are received and events in the order listed in the envelope.  
+
+Step 1. Separate events with different _to_ addresses into different envelopes. Process these envelopes in the order that the _to_ recipients appear in the envelope events list. Treat events without a _to_ as if it was addressed to all converants in the conversation as a group and treat this group as a recipient for the purposes of this step.
+
+Step 2. The floor manager can add its own events to the envelope if required. This enables the floor to make explicit any implicit events that may have been omitted by the client. For example if an _utterance_ is addressed to a recipient who is not currently a conversant then the floor manager will add an _invite_ to the head of the envelope.
+
+Step 3. Process each envelope as a separate thread taking each event in the envelope in the order declared.  Some events will require the floor to wait for responses before proceeding to the next event.
+
+In the table below 'forward to INTENDED'  means the following:
+  - If _private_ is true:  
+    - if the _to_ is defined then add to envelope intended for the intended target only.
+    - If _to_ is not defined then ignore this event.
+ 
+  - If not:
+    - Add the event to an envelope for all participants apart from the sender.
+    - Maintain any _to_ details in those envelopes if specified.
+
+In the table below 'forward to convener' means that the event is forwarded to the convener and a response it waited for before executing any other events in the envelope.
 
 A minimal floor manager will therefore exhibit the following behaviours.   
 
-  * _utterance_  - Forward to intended recipient. (keep private parameter)
-  * _invite_   - Forward to intended recipient. 
-  * _declineInvite_ - Forward to intended recipient. 
-  * _uninvite_- Forward to intended recipient. 
-  * _describeAssistant_  - Forward to intended recipient. 
-  * _publishManifests_ - Forward to intended recipient. 
-  * _getManifests_  - Forward to intended recipient. 
-  * _publishManifests_  - Forward to intended recipient. 
-  * _bye_ - Forward to intended recipient. Also remove this agent from the current register of active conversants.
-  * _requestFloor_ - Return a _grantFloor_ 
-  * _grantFloor_ - Forward to intended recipient. 
-  * _revokeFloor_ - Forward to intended recipient. 
-  * _yieldFloor_ - Do nothing.
+|event|pre condition|source=not-convener|source=convener|minimal convener|
+|-|-|-|-|-|
+|_utterance_|is_conversant=True<br>has_floor=True|forward to INTENDED|forward to INTENDED||
+|_invite_||forward to CONVENER|forward to INTENDED||
+|_uninvite_|is_conversant=True|forward to CONVENER|forward to INTENDED||
+|_declineInvite_|_invite_|forward to ALL|forward to ALL||
+|_acceptInvite_|_invite_|forward to ALL|forward to ALL||
+|_bye_|_invite_|forward to ALL|forward to ALL||
+|_getManifests_||forward to INTENDED|forward to INTENDED||
+|_publishManifests_||forward to INTENDED|forward to INTENDED||
+|_requestFloor_||forward to CONVENER|send a _grantFloor_ to INTENDED||
+|_grantFloor_||forward to INTENDED|forward to INTENDED||
+|_yieldFloor_||forward to INTENDED|forward to INTENDED||
 
 #### 2.3 Ignoring events with protocols that require a response
 
@@ -1439,3 +1472,4 @@ This section documents some of the key design decisions that were made by the te
 |0.9.3|2024.11.26|- Added private to event objects</br>- Added context parameter to whisper</br>|
 |0.9.4|2025.05.13|- Changed speakerId to be speakerUri <br>- Make "to" a dictionary containing "serviceUrl" and "speakerUri" in all events</br> - Added section on identity and speakerUri</br>- Add 'floorYield" to mirror "floorRevoke"<br> - Added conversants section<br>- Added the requirement for speakerUri to be unique and persistent for each agent<br>- Removed the need for url to uniquely identify an agent<br>- Refactored requestManifest into a unified findAgent<br>- Added recommendScope to findAgent<br>- Changed publishManifests to return full array of manifests not just the synopsis<br>- Move private into 'to' of the event<br>- Added 'speakerUri' into the 'sender'<br>- Rename serviceEndpoint to serviceUrl and also rename 'url' as 'serviceUrl' in sender and to objects.<br> - Add optional "dialogHistory" section to _Invite_ and _getManifests_ events.<br>- Limit conversants to identification section only.<br>- Move persistent state into the conversant section<br>- Added section on multi-party conversations.<br>- Added description for _requestFloor_ and make it informative not normative.<br>- Added description for _grantFloor_ and make it informative not normative.<br> - Added a description for _revokeFloor_ and normative reason labels <br>- Change the score on _proposeAgent_ to be between 0 and 1.  <br>- uninvite : add description for the uninvite. <br>- Add categories for the _uninvite_ reason.<br> - remove _whisper_ in favor or private _utterance_ and embedded _dialog_events_ </br>- created a top-level context event containing a dialogHistory parameter and leaving it open for other random data to be in there. </br>- removed dialogEvent from all sub-events apart from dialogHistory and utterance </br> - re-instated getManifests, publishManifests, describeAssistant (and publishManifests)</br>- retired context in dialogEvent</br>- make it clear in the spec that utterances can be private or not and that private utterances are whispers. </br>- retire requestManifest  </br>- renamed findAssistant to be getManifests. return publishManifests.</br>- made recommendScope default to internal </br>- made -servicingManifests and discoveryManifests optional in publishManifests. </br>- made reason an optional key in all events</br>- defined special reserved key words in the _reason_ key.</br>- specified which reserved _reason_ keywords applied in which events.- Introduced a separate bare event 'declineInvite' </br> - renamed the spec as Open-floor Inter-Agent Message Specification with the key: "openFloor"|
 |1.0.0|2-25.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
+|1.0.1||-Added AssignedFloorRoles -> tidy up examples..</br>Add acceptInvite||

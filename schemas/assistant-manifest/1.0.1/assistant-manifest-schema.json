@@ -6,7 +6,9 @@
   "required":  [ "identification","capabilities" ],
   "properties": {
     "identification": {
-      "required":  ["serviceUrl" , "organization", "conversationalName" ],
+      "type": "object",
+      "description": "The identification information for the agent.",
+      "required":  ["speakerUri" ,"serviceUrl" , "organization", "conversationalName", "synopsis" ],
       "properties": {
         "speakerUri": {
           "$ref": "#/$defs/uri",
@@ -35,6 +37,13 @@
         "synopsis": {
           "type": "string",
           "description": "A sentence signposting the who the assistant is and their area of expertise."
+        },
+        "openFloorRoles": {
+          "type": "object",
+          "description": "A dictionary of keyed boolean flags indicating the openFloor roles that the agent is able to fulfil.",
+          "additionalProperties": {
+            "type": "boolean"
+          }
         }
       }
     },
