@@ -79,6 +79,27 @@
                   "additionalProperties": false
                 }
               }
+            },
+            "assignedFloorRoles": {
+              "type": "object",
+              "description": "A record of speakerURIs for conversants that have currently been assigned roles by the floor manager.",
+              "properties": {
+                "convener": {
+                  "type": "array",
+                  "description": "Array of speakerURIs for agents currently assigned the convener role. Maximum cardinality is 1.",
+                  "items": {
+                    "$ref": "#/$defs/uri"
+                  },
+                  "maxItems": 1
+                }
+              },
+              "additionalProperties": {
+                "type": "array",
+                "description": "Arrays of speakerURIs for agents assigned to other Open-Floor roles.",
+                "items": {
+                  "$ref": "#/$defs/uri"
+                }
+              }
             }
           }
         },
