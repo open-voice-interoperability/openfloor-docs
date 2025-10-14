@@ -5,6 +5,9 @@
         },
         "conversation": {
             "id": "conv:34f6170e-2acf-4535-95ba-86963620aa8d",
+            "assignedFloorRoles": {
+                "convener": ["tag:dev.travelbot,2025:0001"]
+            },
             "conversants": [
                 {
                     "identification": {
