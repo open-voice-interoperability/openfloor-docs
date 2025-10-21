@@ -1366,17 +1366,19 @@ A minimal floor manager will therefore exhibit the following behaviours.
 
 |event|pre condition|source=not-convener|source=convener|minimal convener|
 |-|-|-|-|-|
-|_utterance_|is_conversant=True<br>has_floor=True|forward to INTENDED|forward to INTENDED||
-|_invite_||forward to CONVENER|forward to INTENDED||
-|_uninvite_|is_conversant=True|forward to CONVENER|forward to INTENDED||
+|_utterance_|is_conversant=True<br>has_floor=True|forward to INTENDED|forward to INTENDED|Authorize|
+|_utterance_|is_conversant=True<br>has_floor=False||||
+|_invite_||forward to CONVENER|forward to INTENDED|Authorize|
+|_uninvite_|is_conversant=True|forward to CONVENER|forward to INTENDED|Ignore|
 |_declineInvite_|_invite_|forward to ALL|forward to ALL||
 |_acceptInvite_|_invite_|forward to ALL|forward to ALL||
 |_bye_|_invite_|forward to ALL|forward to ALL||
 |_getManifests_||forward to INTENDED|forward to INTENDED||
 |_publishManifests_||forward to INTENDED|forward to INTENDED||
-|_requestFloor_||forward to CONVENER|send a _grantFloor_ to INTENDED||
-|_grantFloor_||forward to INTENDED|forward to INTENDED||
+|_requestFloor_||forward to CONVENER|send a _grantFloor_ to INTENDED|Authorize|
+|_grantFloor_||forward to CONVENER|forward to INTENDED||
 |_yieldFloor_||forward to INTENDED|forward to INTENDED||
+|_revokeFloor_||forward to CONVENER|forward to INTENDED|Authorize|
 
 #### 2.3 Ignoring events with protocols that require a response
 
