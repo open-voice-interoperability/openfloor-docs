@@ -141,7 +141,7 @@ A list of the valid roles in that document is repeated below, including the defa
 |Open-Floor Role|Description|Default role| 
 |-|-|-|
 |`convener`|The agent is able to act as as floor convener, dealing with invites and floor grant requests|False| 
-|`discovery`|The agent is abel to act as a a discovery agent|False| 
+|`discovery`|The agent is able to act as a a discovery agent|False| 
 
 
 Note that it is the responsibility of the floor manager to assign the role of a convener to a floor. The manifest record indicates willingness to perform the role. It is not a guarantee that this role will be assigned.
