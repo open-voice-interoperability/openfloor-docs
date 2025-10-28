@@ -32,17 +32,16 @@
   - [1.10 Utterance Events](#110-Utterance-Events)
   - [1.10.1 Utterance Text Feature](#1101-dialogEvent-Text-Feature)
   - [1.11 Extensible Dialog Event Features (Informative)](#111-Extensible-Dialog-Event-Features-Informative)
-  - [1.12 context Event](#112-context-Event)
-  - [1.13 invite Event](#113-invite-Event)
-  - [1.14 uninvite Event](#114-uninvite-Event)
-  - [1.15 declineInvite Event](#115-declineInvite-Event)
-  - [1.16 bye Event](#116-bye-Event)
-  - [1.17 getManifests Event](#117-getManifests-Event)
-  - [1.18 publishManifests Event](#118-publishManifests-Event)
-  - [1.19 requestFloor Event](#119-requestFloor-Event-INFORMATIVE)
-  - [1.20 grantFloor Event](#120-grantFloor-Event-INFORMATIVE)
-  - [1.21 revokeFloor Event](#121-revokeFloor-Event)
-  - [1.22 yieldFloor Event](#122-yieldFloor-Event)
+  - [1.12 invite Event](#112-invite-Event)
+  - [1.13 uninvite Event](#113-uninvite-Event)
+  - [1.14 declineInvite Event](#114-declineInvite-Event)
+  - [1.15 bye Event](#115-bye-Event)
+  - [1.16 getManifests Event](#116-getManifests-Event)
+  - [1.17 publishManifests Event](#117-publishManifests-Event)
+  - [1.18 requestFloor Event](#118-requestFloor-Event-INFORMATIVE)
+  - [1.19 grantFloor Event](#119-grantFloor-Event-INFORMATIVE)
+  - [1.20 revokeFloor Event](#120-revokeFloor-Event)
+  - [1.21 yieldFloor Event](#121-yieldFloor-Event)
 - [2 MINIMAL BEHAVIORS](#2-MINIMAL-BEHAVIORS)
   - [2.1 Minimal Assistant Behavior](#21-Minimal-Servicing-Assistant-Behaviors-on-Receipt-of-Events-INFORMATIVE)
   - [2.2 Minimal Conversation Floor Manager Behaviors](#22-Minimal-Conversation-Floor-Manager-Behaviors-on-Receipt-of-Events-INFORMATIVE)
@@ -427,7 +426,6 @@ The following are valid values for _eventTypes_.
 
 * **speaking or sending multi-media events** (publicly or privately)
   * _utterance_  - An 'utterance' spoken or whispered from one conversant to some or all participants
-  * _context_ - Optional additional text or media to accompany an utterance.
 
 * **joining or leaving conversations**
   * _invite_ - A conversant is invited to join the conversation.
@@ -531,40 +529,7 @@ There are no limitations on the features that are added to a dialog event.  This
 
 #### Figure 13. Example video feature, which at present would be considered a custom feature.
 
-### 1.12 Context Event
-
-    {
-      "openFloor": {
-        ..
-        "events": [
-          {
-            "to": { 
-              "speakerUri": "tag:someBotOrPerson.com,2025:0021"
-            },
-            "eventType": "context",
-            "parameters": {
-              "dialogHistory": [
-                { .. utterance dialog event N-2 .. },
-                { .. utterance dialog event N-1 .. },
-                { .. utterance dialog event N } .. }
-              ],
-              "other" : { .. arbitrary contextual information }
-            }
-          },
-          ..
-        ]
-      }
-    }
-
-#### Figure 14. Typical context event
-
-The purpose of the _context_ event is to give additional information to recipient agents.   This event is intended primarily to support context for general purpose AIs. For this reason it can have any structure and content and will typically be sent alongside other events as well.   The _context_ event can also contain an optional _dialogHistory_ parameter to convey dialog history in a standard format.  If media other than text is to be included in the _context_ object it is recommended that parameters with the format of a dialogEvent are used with meaningful key names.
-
-The _dialogHistory_ parameter is a simple list of dialog events which should contain some or all of the utterances in the dialog.  It is good practice to order these in startTime order (in universal time) with the most recent event being the last item in the list. It is at the discretion of the sender of the _invite_ to decide how much history to include and whether to omit or anonymize certain dialogEvents in order to maintain security and confidentiality. For example, the conversational floor may decide to send the last 'N' (e.g. N=4) events in the dialog as if the invited agent had been at the floor for those N dialog turns.  If the agents had not been entitled to receive some of those events then these would also be omitted from the dialogHistory array or anonymized or redacted in some fashion.
-
-Conversants that do not have general purpose AI capability may choose to ignore the context event.
-
-### 1.13 Invite Event
+### 1.12 Invite Event
 
     {
       "openFloor": {
@@ -633,13 +598,7 @@ It is possible to invite an agent to a conversation without giving it any other 
             "to": { 
               "serviceUrl": "https://siteof.botThatIsBeingInvited.com",
               "speakerUri": "tag:botThatIsBeingInvited.com,2025:1234"
-            }
-          },
-          {
-            "to": { 
-              "serviceUrl": "https://siteof.botThatIsBeingInvited.com"
             },
-            "eventType": "context",
             "parameters": {
               "dialogHistory": [
                 { .. utterance dialog event N-2 .. },
@@ -661,11 +620,13 @@ It is possible to invite an agent to a conversation without giving it any other 
       }
     }
 
-##### Figure 16. A typical dialog envelope for an invite, including a voiced transfer prompt, and a context object containing dialog history including the request from the user as the last dialog event in the history.
+##### Figure 16. A typical dialog envelope for an invite, including a voiced transfer prompt and dialog history in the invite event.
 
-Invite events may be accompanied by additional events and contain optional parameters.  Figure 16 shows a conversation envelope where the inviting agent tells the user that they are inviting another agent to speak with them.  Then the invite event issues the invitation, accompanied by a context event which conveys the dialog history up to the point of the invite to help the invited bot respond appropriately.
+Invite events may be accompanied by additional events and contain optional parameters. The _invite_ event can include an optional _dialogHistory_ parameter which is a simple list of dialog events containing some or all of the utterances in the dialog. It is good practice to order these in startTime order (in universal time) with the most recent event being the last item in the list. It is at the discretion of the sender of the _invite_ to decide how much history to include and whether to omit or anonymize certain dialogEvents in order to maintain security and confidentiality. For example, the conversational floor may decide to send the last 'N' (e.g. N=4) events in the dialog as if the invited agent had been at the floor for those N dialog turns. If the agents had not been entitled to receive some of those events then these would also be omitted from the dialogHistory array or anonymized or redacted in some fashion.
 
-### 1.14 uninvite Event
+Figure 16 shows a conversation envelope where the inviting agent tells the user that they are inviting another agent to speak with them. Then the invite event issues the invitation with dialog history to help the invited bot respond appropriately.
+
+### 1.13 uninvite Event
 
     {
       "openFloor": {
@@ -702,7 +663,7 @@ The following special tokens have particular meaning in this event.
 |@brokenPolicy|The floor manager or convener is removing the agent from the conversation because the agent has not met certain policy standards. This may be, for example, due to unsolicited or offensive contributions to the conversation.|
 |@error|The floor manager or convener is removing the agent from the conversation because some kind of error has ocurred which means it is not longer meaningful for the agent to continue being part of the conversation.|
 
-### 1.15 declineInvite Event
+### 1.14 declineInvite Event
 
     {
       "openFloor": {
@@ -740,7 +701,7 @@ The following special _reason_ tokens have particular meaning in this event.
 |@refused|The agent is declining the invite because it is not willing to handle this request|
 |@error|The agent is declining the floor because it has encountered an error from which it cannot recover|
 
-### 1.16 Bye Event
+### 1.15 Bye Event
 
     {
       "openFloor": {
@@ -804,7 +765,7 @@ Figure 20. A _bye_ event with a voiced farewell.
 
 As with the _invite_ event, the _bye_ event can be accompanied by other events as shown in Figure 20.  In this example the agent indicates its intention to leave the conversation and voices a farewell as it does so.
 
-### 1.17 getManifests Event
+### 1.16 getManifests Event
 
 The _getManifests_ event can be used to ask an assistant about the services it provides or to recommend other assistants for a certain task.   There are a three use-cases for this event.
 
@@ -812,13 +773,13 @@ The _getManifests_ event can be used to ask an assistant about the services it p
 2. Asking a site or assistant (or human agent) if they are willing and able to support a specific task.
 3. Asking a site or assistant (or human agent) to recommend one or more assistants that can help with a certain task.
 
-A _publishManifests_ event will be returned in response to the _getManifests_ event as defined in section 1.18.  This will contain one or more manifests [4] each defining the location, identity, and services provided by a specific assistant.   The returned manifests will be classified as either _servicingManifests_ or _discoveryManifests_ depending on whether these agents are primarily servicing assistants or discovery assistants.
+A _publishManifests_ event will be returned in response to the _getManifests_ event as defined in section 1.15.  This will contain one or more manifests [4] each defining the location, identity, and services provided by a specific assistant.   The returned manifests will be classified as either _servicingManifests_ or _discoveryManifests_ depending on whether these agents are primarily servicing assistants or discovery assistants.
 
 The _getManifests_ event has the following optional parameters:
 
 - "recommendScope" : "external" | "internal" | "all"   (Default = "internal")
 
-A _getManifests_ event can also optionally be accompanied by a private utterance event containing a natural language description of the task to be performed.  It can also be accompanied by a _context_ event containing dialog history to assist with the decision.
+A _getManifests_ event can also optionally be accompanied by a private utterance event containing a natural language description of the task to be performed.
 
     {
       "openFloor": {
@@ -892,16 +853,6 @@ The returned manifest list will be expected to only contain manifests from the t
                 }
               }
             }
-          },
-          {
-            "eventType": "context",
-            "parameters": {
-              "dialogHistory": [
-                { utterance dialog event N-2 },
-                { utterance dialog event N-1 },
-                { utterance dialog event N }
-              ]
-            }
           }
         ]
       }
@@ -909,9 +860,9 @@ The returned manifest list will be expected to only contain manifests from the t
 
 ##### Figure 22. Use Case #2. Asking an assistant if they are willing and able to support a specific task.
 
-Figure 22 shows the same bot as Figure 21 being asked if it supports a specific task.  The extra _context_ and private _utterance_ events are used to communicate the specific task that is being requested.  It is this which distinguishes use case #1 from use case #2.   
+Figure 22 shows the same bot as Figure 21 being asked if it supports a specific task. The private _utterance_ event is used to communicate the specific task that is being requested. It is this which distinguishes use case #1 from use case #2.   
 
-The target assistant should return a _publishManifests_ containing any agents that it believes are capable and willing to respond to the private utterance in the given context. In the above example, the _recommendScope is explicitly set to the default value "internal".  
+The target assistant should return a _publishManifests_ containing any agents that it believes are capable and willing to respond to the private utterance. In the above example, the _recommendScope is explicitly set to the default value "internal".  
 
     {
       "openFloor": {
@@ -989,9 +940,9 @@ The optional _to_ object can be used to indicate which agent is the intended rec
 
 As with the invite event, there is no requirement for a _speakerUri_ on a _getManifests_ event.  If one is provided then it up to the receiving agent to decide how to take it into account.  If the event is addressed to a _serviceUrl_ without an _speakerUri_ then it is best practice to return all the manifests associated with that _serviceUrl_.  If a _speakerUri_ is sent then it is best practice to return only the manifest associated with just that _speakerUri_. If the _speakerUri_ does match then it is best practice to return an empty manifest list.  It may however be helpful for a discovery agent to return manifests of other discovery agents that it thinks might be able to help with the request.
 
-See section 1.18 for more information on _publishManifests_ event behaviors.
+See section 1.15 for more information on _publishManifests_ event behaviors.
 
-### 1.18 publishManifests Event
+### 1.17 publishManifests Event
 
     {
       "openFloor": {
@@ -1072,7 +1023,7 @@ See section 1.18 for more information on _publishManifests_ event behaviors.
 
 ##### Figure 24. A typical publishManifests event 
 
-The _publishManifests_ event is sent when one agent would like to publish the capability of itself or other agents.   This will usually be in response to a _getManifests_ event (See section 1.17) but can also be used to make a delegation suggestion in response to an _utterance_ (Section 1.10).
+The _publishManifests_ event is sent when one agent would like to publish the capability of itself or other agents.   This will usually be in response to a _getManifests_ event (See section 1.15) but can also be used to make a delegation suggestion in response to an _utterance_ (Section 1.10).
 
 Once an agent receives a _getManifests_ event it can do a combination of the following:
 
@@ -1084,7 +1035,7 @@ In order to support this the _publishManifests_ event has two optional parameter
 - _servicingManifests_ - A list of agents that can service this request.
 - _discoveryManifests_ - A list of agents that can recommend other agents to service this request.
 
-A common response from the receiver of this event will be to examine the returned manifests to decide whether to issue an _invite_ to that agent.  This _invite_ event would often be accompanied by any _uuterance_ and _context_ events that were sent with the _getManifests_ event, suitably re-addressed to the agent that is being invited. 
+A common response from the receiver of this event will be to examine the returned manifests to decide whether to issue an _invite_ to that agent. This _invite_ event would often be accompanied by any _utterance_ event that was sent with the _getManifests_ event, suitably re-addressed to the agent that is being invited. 
 
 If an agent receives any other event that it does not feel capable of servicing, it can also return a _publishManifests_ event as a recommendation to use the services of a different agent.   This is a soft form of delegation.  
 
@@ -1104,7 +1055,7 @@ Note that there is no requirement in the Open-Floor framework for an assistant t
 
 The recommending agent is free to use any mechanism it wants to generate the _score_.   
 
-### 1.19 requestFloor Event [INFORMATIVE]
+### 1.18 requestFloor Event [INFORMATIVE]
 
     {
       "openFloor": {
@@ -1139,7 +1090,7 @@ This event is somewhat experimental and is currently informative not normative a
 
 The optional _reason_ section can be used to convey the reason for the floor request.  This can be used to help with the decision whether to grant the floor or not.  No special reason tokens are defined yet for this event.   
 
-### 1.20 grantFloor Event [INFORMATIVE]
+### 1.19 grantFloor Event [INFORMATIVE]
 
     {
       "openFloor": {
@@ -1223,7 +1174,7 @@ The accompanying private _utterance_ event  explains in natural language and sup
 
 This event is somewhat experimental and is currently informative not normative and may be subject to change.  Compliant agents do not need to support this event yet but naïve implementations can treat this event as they would an _invite_ event. (See section 2.1) 
 
-### 1.21 revokeFloor Event
+### 1.20 revokeFloor Event
 
     {
       "openFloor": {
@@ -1263,7 +1214,7 @@ The optional _reason_ key can be used to convey the reason that the floor has be
 |@override|The convener is removing the agent's floor rights because it is granting floor rights to another agent with higher precedence|
 |@error|The convener is removing the agent's floor rights because some kind of error has ocurred which means it is no longer meaningful for the agent to continue interacting.|
 
-### 1.22 yieldFloor Event
+### 1.21 yieldFloor Event
 
     {
       "openFloor": {
@@ -1461,7 +1412,7 @@ This section documents some of the key design decisions that were made by the te
 |should _to_ always be present?|_Question_:Should we insist on a _to_ in all events and have an explicitly way of indicating 'all'?  <br>_Answer:_ If _to_ is omitted then the event is intended for all recipients.  This allows simple systems with one user and one agent to simply omit the _to_ section.|
 |Include "reason" in all events|_Question_:Why not allow an optional "reason" parameter in all events? It might not be as helpful in all events, but we might as well allow it for simplicity.<br>_Answer_: Agreed - make reason an optional key in all events and allow it to be open text with special reserved words in the form '@timed-out'. Include a list of supported reserve words and also indicate in individual events how these reserved words might apply in that context.|
 |Arbitrary text in "reasons"|_Question:_ Should we let "reasons"  contain arbitrary text?</br>_Answer_: Yes. We will make reason an optional key in all events and allow it to be open text with special reserved words in the form '@timed-out'. Include a list of supported reserve words and also indicate in individual events how these reserved words might apply in that context.|
-|Are manifest accretive?|_Question_:  When reading section 1.16 of the Conversational Envelope I was wondering. Who are the participants that should receive a publishManifests message In case you have a sequence: Agent A - Agent B - Agent C. So A invites B and B invites C. Hence, A may not know about C but only B. How is this to be reflected in the manifest as the capabilities of C will add to those of B?<br>_Answer:_ No we are not anticipating that manifests will be cumulative. The envelope contains a 'conversants' section in the 'conversation' area. For each conversants we keep partial manifests containing the 'identity' information for each agent. Thus any party to the conversation can request full manifest information from any conversant at any time. So if tasks are delegated round-table to other agents then it is clear that the other agent is providing this service and you can use their manifest directly in this case. If an agent is using the services of other agents behind the scenes then this is their private affair. We expect an agent to include in its manifest the range of services that it offers regardless of how it provides this. So if an agent is general purpose and is 'rebadging' the services of other agents then the their manifest should explain that they are a general purpose agent. We are not currently anticipating that manifests will be dynamic in nature depending context. We are expecting that manifests might be updated as capabilities change.|
+|Are manifest accretive?|_Question_:  When reading section 1.15 of the Conversational Envelope I was wondering. Who are the participants that should receive a publishManifests message In case you have a sequence: Agent A - Agent B - Agent C. So A invites B and B invites C. Hence, A may not know about C but only B. How is this to be reflected in the manifest as the capabilities of C will add to those of B?<br>_Answer:_ No we are not anticipating that manifests will be cumulative. The envelope contains a 'conversants' section in the 'conversation' area. For each conversants we keep partial manifests containing the 'identity' information for each agent. Thus any party to the conversation can request full manifest information from any conversant at any time. So if tasks are delegated round-table to other agents then it is clear that the other agent is providing this service and you can use their manifest directly in this case. If an agent is using the services of other agents behind the scenes then this is their private affair. We expect an agent to include in its manifest the range of services that it offers regardless of how it provides this. So if an agent is general purpose and is 'rebadging' the services of other agents then the their manifest should explain that they are a general purpose agent. We are not currently anticipating that manifests will be dynamic in nature depending context. We are expecting that manifests might be updated as capabilities change.|
 |Declining invites|_Question_:Section 1.13 of the Conversational Envelope specification describes the invite event. Can an invite be rejected? If yes, how can this be done? I remember a busy-out method in the times of IVRs. The purpose was to complete ongoing calls and not to accept new calls, e.g., if the system should go down for maintenance. Is there something comparable?<br>_Answer:_ Added a bare event 'declineInvite'|
 
 ### 7 Document Change Log
@@ -1474,4 +1425,5 @@ This section documents some of the key design decisions that were made by the te
 |0.9.3|2024.11.26|- Added private to event objects</br>- Added context parameter to whisper</br>|
 |0.9.4|2025.05.13|- Changed speakerId to be speakerUri <br>- Make "to" a dictionary containing "serviceUrl" and "speakerUri" in all events</br> - Added section on identity and speakerUri</br>- Add 'floorYield" to mirror "floorRevoke"<br> - Added conversants section<br>- Added the requirement for speakerUri to be unique and persistent for each agent<br>- Removed the need for url to uniquely identify an agent<br>- Refactored requestManifest into a unified findAgent<br>- Added recommendScope to findAgent<br>- Changed publishManifests to return full array of manifests not just the synopsis<br>- Move private into 'to' of the event<br>- Added 'speakerUri' into the 'sender'<br>- Rename serviceEndpoint to serviceUrl and also rename 'url' as 'serviceUrl' in sender and to objects.<br> - Add optional "dialogHistory" section to _Invite_ and _getManifests_ events.<br>- Limit conversants to identification section only.<br>- Move persistent state into the conversant section<br>- Added section on multi-party conversations.<br>- Added description for _requestFloor_ and make it informative not normative.<br>- Added description for _grantFloor_ and make it informative not normative.<br> - Added a description for _revokeFloor_ and normative reason labels <br>- Change the score on _proposeAgent_ to be between 0 and 1.  <br>- uninvite : add description for the uninvite. <br>- Add categories for the _uninvite_ reason.<br> - remove _whisper_ in favor or private _utterance_ and embedded _dialog_events_ </br>- created a top-level context event containing a dialogHistory parameter and leaving it open for other random data to be in there. </br>- removed dialogEvent from all sub-events apart from dialogHistory and utterance </br> - re-instated getManifests, publishManifests, describeAssistant (and publishManifests)</br>- retired context in dialogEvent</br>- make it clear in the spec that utterances can be private or not and that private utterances are whispers. </br>- retire requestManifest  </br>- renamed findAssistant to be getManifests. return publishManifests.</br>- made recommendScope default to internal </br>- made -servicingManifests and discoveryManifests optional in publishManifests. </br>- made reason an optional key in all events</br>- defined special reserved key words in the _reason_ key.</br>- specified which reserved _reason_ keywords applied in which events.- Introduced a separate bare event 'declineInvite' </br> - renamed the spec as Open-floor Inter-Agent Message Specification with the key: "openFloor"|
 |1.0.0|2-25.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
-|1.0.1||-Added AssignedFloorRoles -> tidy up examples..</br>Add acceptInvite||
+|1.0.1||-Added AssignedFloorRoles -> tidy up examples..</br>- Add acceptInvite - TO DO</br>- Moved dialogHistory into Invite event</br>- Removed Context event.</br>
+||
