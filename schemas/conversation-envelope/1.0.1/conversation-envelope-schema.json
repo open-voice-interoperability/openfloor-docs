@@ -128,15 +128,14 @@
               "eventType": {
                 "type" : "string",
                 "enum": [
-                  "invite", 
+                  "invite",
                   "uninvite",
                   "declineInvite",
-                  "utterance", 
-                  "bye", 
-                  "context",
-                  "getManifests", 
-                  "publishManifests", 
-                  "findAssistant", 
+                  "utterance",
+                  "bye",
+                  "getManifests",
+                  "publishManifests",
+                  "findAssistant",
                   "proposeAssistant",
                   "requestFloor",
                   "grantFloor",
@@ -192,44 +191,27 @@
               {
                 "if": {
                   "properties": {
-                    "eventType": { "const": "context" }
-                  },
-                  "required": ["eventType"]
-                },
-                "then" : {
-                  "properties": {
-                    "parameters": {
-                      "description": "Parameters for the context event.",
-                      "type" : "object",
-                      "properties" : {
-                        "dialogHistory": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "ref": "https://github.com/open-voice-interoperability/lib-interop/tree/main/schemas/dialog-event/1.0.2/dialog-event-schema.json"
-                          }
-                        }
-                      },  
-                      "additionalProperties": true
-                    }
-                  }
-                }
-              },
-              {
-                "if": {
-                  "properties": {
                     "eventType": { "const": "invite" }
                   },
                   "required": ["eventType"]
                 },
                 "then" : {
-                  "properties": { 
+                  "properties": {
                     "parameters" : {
                       "description": "Parameters for the invite event.",
                       "type": "object",
-                      "maxProperties": 0,
+                      "properties": {
+                        "dialogHistory": {
+                          "type": "array",
+                          "description": "Optional list of dialog events containing some or all of the utterances in the dialog.",
+                          "items": {
+                            "type": "object",
+                            "ref": "https://github.com/open-voice-interoperability/lib-interop/tree/main/schemas/dialog-event/1.0.2/dialog-event-schema.json"
+                          }
+                        }
+                      },
                       "additionalProperties": false
-                    } 
+                    }
                   }
                 }
               },

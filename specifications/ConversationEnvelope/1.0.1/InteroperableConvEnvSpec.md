@@ -904,25 +904,6 @@ The target assistant should return a _publishManifests_ containing any agents th
                 }
               }
             }
-          },
-          {
-            "eventType": "context",
-            "parameters": {
-              "dialogHistory": [
-                { utterance dialog event N-2 },
-                { utterance dialog event N-1 },
-                {
-                  "speakerUri": "tag:someuser.com,2025:4567",
-                  "span": { "startTime": "2023-06-14 02:06:07+00:00" },
-                  "features": {
-                    "text": {
-                      "mimeType": "text/plain",
-                      "tokens": [ { "value": "Do I need a visa to enter Estonia from Spain?" } ] 
-                    }
-                  }
-                }
-              ]
-            }
           }
         ]
       }
@@ -1268,7 +1249,7 @@ If the _to_ section is addressed to the agent (or is absent) then the following 
   * _utterance_  -  Answer the speaker with an utterance in return <br>  (typically public utterances will have public responses and private utterances will have private responses)
 
 * agent control events  - structure control messages
-  * _invite_ - Send a 'hello' _utterance_ and respond to any accompanying _context_ or _utterance_ events or send _declineInvite_ event.
+  * _invite_ - Send a 'hello' _utterance_ and respond to any accompanying _utterance_ events or _dialogHistory_ in the invite parameters, or send _declineInvite_ event.
   * _declineInvite_ - Ignore this event from another assistant unless you were the agent that sent the _invite_.
   * _bye_ - Ignore this event from another assistant.
   * getManifests
