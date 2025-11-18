@@ -130,6 +130,7 @@
                 "enum": [
                   "invite",
                   "uninvite",
+                  "acceptInvite",
                   "declineInvite",
                   "utterance",
                   "bye",
@@ -236,18 +237,36 @@
               {
                 "if": {
                   "properties": {
+                    "eventType": { "const": "acceptInvite" }
+                  },
+                  "required": ["eventType"]
+                },
+                "then" : {
+                  "properties": {
+                    "parameters" : {
+                      "description": "Parameters for the acceptInvite event.",
+                      "type": "object",
+                      "maxProperties": 0,
+                      "additionalProperties": false
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
                     "eventType": { "const": "declineInvite" }
                   },
                   "required": ["eventType"]
                 },
                 "then" : {
-                  "properties": { 
+                  "properties": {
                     "parameters" : {
                       "description": "Parameters for the declineInvite event.",
                       "type": "object",
                       "maxProperties": 0,
                       "additionalProperties": false
-                    } 
+                    }
                   }
                 }
               },
