@@ -108,7 +108,7 @@ The patterns described above allow for conversation between one user and multipl
 \
 **Figure 2.  Multi-party conversations hosted by a floor manager and a converner agent.**\
 \
-This specification also support the implementation of simultaneous multi-party conversation where multiple users and agents may be listening to the conversation simultaneously and take turns to speak or even speak over one another. Figure 2 shows how this works.  It extends Figure 1 to show multiple agents taking part in a conversations simultaneously.  As in Figure 1, the floor manager manages the conversational interaction.  
+This specification also supports the implementation of simultaneous multi-party conversation where multiple users and agents may be listening to the conversation simultaneously and take turns to speak or even speak over one another. Figure 2 shows how this works.  It extends Figure 1 to show multiple agents taking part in a conversations simultaneously.  As in Figure 1, the floor manager manages the conversational interaction.  
 
 A paper describing the evolution of this approach can be found in [7].  Support for multi-party conversations is maturing but is still somewhat experimental. Additional features or small changes may be necessary as the use-cases and patterns mature.
 
@@ -124,7 +124,7 @@ The floor manager is expected to exhibit predictable, autonomic behaviour that i
 
 In a multi-party conversation the floor will optionally invite a 'Convener' agent to the conversation.  This is an Open-Floor compliant agent but is granted special privileges. The convener acts like the chair of a meeting, mediating which conversants should be invited and if neccessary removing conversants from the conversation.  It also plays a role deciding who is granted floor rights at any given moment.
 
-Agents who are willing and able to act as conveners will publish this in their manifest.  The floor manager is the arbiter of whether to invite a convener or not. The identity of the current convener is published in the _conversation_ section of the envelope.   Only one floor manager is allowed at any one time.
+Agents who are willing and able to act as conveners will publish this in their manifest.  The floor manager is the arbiter of whether to invite a convener or not. The identity of the current convener is published in the _conversation_ section of the envelope.   Only one convener is allowed at any one time.
 
 The floor manager redirects certain events that are intended for a particular recipient to the convener. The convener then chooses whether to re-submit these events to the floor manager who will forward them on to the original target conversant.   The convener may also initiate events to manage the conversation such as revoking of granting the floor and un-inviting conversants who are behaviong in a manner that is detrimantal to the conversation . 
 
@@ -136,9 +136,9 @@ If the conversation does not have a convener assigned then the floor manager wil
 
 The floor manager also maintains and publishes a list of which conversants currently have floor rights. (See the [_floorGranted_ section in the conversation envelope](#16-conversation-object) for more details.)
 
-The Open-Floor protocol uses floor rights to help manage orderly interactions. By default a conversant has the floor until they either choose to yield the floor or the convener explicitly revokes their floor rights.  The floor manager keeps track of the floor status of each conversant but it does not police it.   Agents can send an utterance event whenever they choose and it will be propagated by the floor manager to the relevant conversants.  The floor granting and revoking mechanism in Open_floor is therefore advisory and intended to facitate orderly co-operation between well-behaved agents.  
+The Open-Floor protocol uses floor rights to help manage orderly interactions. By default a conversant has the floor until they either choose to yield the floor or the convener explicitly revokes their floor rights.  The floor manager keeps track of the floor status of each conversant but it does not enforce it.   Agents can send an utterance event whenever they choose and it will be propagated by the floor manager to the relevant conversants.  The floor granting and revoking mechanism in Open-Floor is therefore advisory and intended to facilitate orderly co-operation between well-behaved agents.  
 
-The convener can however police agent behaviour.  It has a role to monitor events and if agents are not behaving in ways that are beneficial to the interaction they can be uninvited.   The floor manager will always respect the wishes of the convener regarding which conversants are currently invited or univited to the conversation.
+The convener can however enforce agent behaviour.  It has a role to monitor events and if agents are not behaving in ways that are beneficial to the interaction they can be uninvited.   The floor manager will always respect the wishes of the convener regarding which conversants are currently invited or univited to the conversation.
 
 Note that any conversant can request floor rights on behalf of themself or another conversant.  The convener will then moderate whether to accept this request or not.
 
@@ -302,7 +302,7 @@ The schema for the version of the envelope specification can be found in [https:
 
 ##### Figure 6. Mandatory elements of the _conversation_ object.
 
-The conversation object carries persistent information related to the current conversation.  It should be passed on from agent to agent.
+The conversation object carries persistent information related to the current conversation.  It is the responsibility of the floor manager (or the agent playing the role of the floor manager) to maintain the contents of this section which should be included in all envelopes.  The only exception to this is the _persistentState_ which is maintaned by the conversants themselves.
 
 As shown in Figure 6, the conversation section contains just one piece of mandatory information - the id of the conversation.  The id  should be a unique identifier for the current conversation with the user.  Persistent information relating to this current conversation can be keyed to this id.   The id  can be any arbitrary length character sequence that can be represented as a string in JSON.
 
@@ -314,7 +314,7 @@ As shown in Figure 6, the conversation section contains just one piece of mandat
 
           "assignedFloorRoles" : { 
             "convener" : ["tag:dev.buerokratt.ee,2025:0001"] 
-            "floorGranted" : ["tag:agent1.example.com,2025:1234", "tag:agent2.example.com,2025:5678"]
+            "floorGranted" : ["tag:user1.example.com,2025:1234", "tag:agent2.example.com,2025:5678"]
           },
 
           "conversants" :[
@@ -334,7 +334,21 @@ As shown in Figure 6, the conversation section contains just one piece of mandat
                     "uniqueKey1": { .. object .. },
                     "uniqueKey2": { .. object .. } 
                   }
-              }
+              },
+              {      
+                "identification":
+                  {
+                      "speakerUri" : "tag:user1.example.com,2025:1234",
+                      ...
+                  }
+              },
+              {      
+                "identification":
+                  {
+                      "speakerUri" : "tag:agent2.example.com,2025:5678",
+                      ...
+                  }
+              },
           ]
         },
         … 
@@ -345,26 +359,32 @@ As shown in Figure 6, the conversation section contains just one piece of mandat
 
 Figure 7 shows other additional elements in the conversation object. 
 
-The _conversants_ section is optional and if present should contain a list of all the conversants in the conversation and be persisted by participants in the conversation.  Each conversant object should contain an _identification_ key and an optional _persistentState_ key. 
+##### 1.6.1 The _conversants_ section
+
+The _conversants_ section is optional if there are two or less conversants in the conversation.   It is mandatory if there are more than two conversants in the current conversation or there is an _assignedFloorRoles_ section in the _conversation_.   It is a good practice to always have a _conversants_ section.   
+
+The _conversant_ section contains a list of all the conversants in the conversation. Each conversant object should contain an _identification_ key and an optional _persistentState_ key. 
 
 The _identification_ section should be a copy of the _identification_ section of the agent's manifest as defined in [4].   
 
-The _persistentState_ is optional and consists of key-value pairs where the values can be any arbitrary JSON object.  The purpose of this is to enable agents to persist information that is important to maintaining internal state in the conversation.  Message senders should only add new key-value pairs to their own conversant object.
+The _persistentState_ is optional and consists of key-value pairs where the values can be any arbitrary JSON object.  The purpose of this is to enable agents to persist information that is important to maintaining internal state in the conversation.  Message senders should only add new key-value pairs tothe _persistentState_ in their own _conversants_ member object and should remove those that are no longer necessary. There are currently no restrictions placed on the content of persistent objects.   Privacy and security issues apply here. It is suggested that the data in these sections is encrypted but this is not mandatory.  Consideration should also be given to the size of any objects in this section as this might affect the downstream performance of the remaining conversation.
 
-The _assignedFloorRoles_ dictionary is a record of which conversants have been assigned specific Open-Floor roles by the floor manager. Each role maps to an array of speakerURIs for agents currently assigned that role, with some roles (like convener) having a maximum cardinality of 1. !!! Any agents that are assigned roles must also be listed in the "conversants" section. !!!
+##### 1.6.2 The _assignedFloorRoles_ section
 
-Agents advertise their willingness to perform certain roles in the _Identification.openFloorRoles_ section of their manifest.   Roles are assigned to agents by the floor manager. There is no obligation of a floor manager to assign an agent a certain role.  !!! If a role is not defined then this indicates that the floor must provide this role.  !!!   Agents are not limited to fulfilling a single role, they can have any number of roles within a conversation.
+The _assignedFloorRoles_ dictionary is a record of which conversants have been assigned specific Open-Floor roles by the floor manager. Each role maps to an array of speakerURIs for agents currently assigned that role, with some roles (like convener) having a maximum cardinality of 1. Any conversants that are assigned roles must also be listed in the "conversants" section.
+
+Conversants advertise their willingness to perform certain roles in the _Identification.openFloorRoles_ section of their manifest.   Roles are only assigned to agents by the floor manager. There is no obligation of a floor manager to assign an agent a certain role.  
+
+Conversants are not limited to fulfilling a single role, they can have any number of roles within a conversation.
 
 The roles that a floor manager can assign are listed below.  The default value of the _Identification.openFloorRoles_ element for each conversant are defined in [[4]](https://github.com/open-voice-interoperability/docs/blob/main/specifications/AssistantManifest/1.0.1/AssistantManifestSpec.md) and repeated below for clarity.   
 
-|Open-Floor Role|Description|Default manifest role|Max Elements|
+|Open-Floor Role|Description|Default manifest role|Max conversants|
 |-|-|-|-|
 |`convener`|The agent is acting as floor convener, dealing with invites and floor grant requests|False|1|
-|!!`discovery`!!|The agent is assigned by the floor to be a discovery agent|False|unlimited|
+|`floorGranted`|The conversant is welcome to send utterances|n/a|unlimited|
 
-All message handlers should persist the data in this section when replying to a message.  Agents are encouraged to remove themselves from the _conversant_ section when sending a 'bye' event.  It is incumbent on floor managers to also do basic housekeeping on the _conversation_ section.
-
-There are currently no restrictions currently placed on the content of persistent objects.   Privacy and security issues apply here. It is suggested that the data in these sections is encrypted but this is not mandatory.  Consideration should also be given to the size of any objects in this section as this might affect the downstream performance of the remaining conversation.
+All conversants are currently assumed to be capable of having the `floorGranted` role so it is not relevant to include this in the manifest for the agent.
 
 #### 1.7 Sender Object
 
@@ -455,7 +475,7 @@ Figure 10 shows an example of this.
 The following are valid values for _eventTypes_.
 
 * **speaking or sending multi-media events** (publicly or privately)
-  * _utterance_  - An 'utterance' spoken or whispered from one conversant to some or all participants
+  * _utterance_  - One or more dialogEvent media objects spoken or presented (or whispered privately) from one conversant to some or all participants
 
 * **joining or leaving conversations**
   * _invite_ - A conversant is invited to join the conversation.
@@ -507,30 +527,76 @@ The following sections define these event objects in more detail.
 
 Figure 11. Example of an Open-Floor _utterance_ event.
 
-The utterance event is the message that is for assistants or users to 'speak' to each other.
-They can contain media of any type.  dialogEvent objects must contain a 'text' feature.
-Additional feature types and mime-types are permitted.  
+The utterance event is the message that is for assistants or users to 'speak' to each other.  Whilst utterances are designed to carry linguistic media events they can contain media of any type.  
+
+The Open-Floor standard currently support four standard feature types but other arbitrary feature names and mime-types are also permitted.  The supported keys are:
+
+- `text` - A message that is spoken or written language.
+- `ssml` - A message that is to be verbalized using Speech Synthesis Markup Language.
+- `html` - Multi-media content in HTML format.
+- `audio` - Audio content in one of a number of audio formats.
+
+Then dialogEvent can contain multiple feature objects but it must contain a `text` feature which should be capable of being 'verbalized' (i.e. this is content that is intended for direct consumption as written or spoken language by the recipient). For dialogEvents containing `ssml` content the `text` dialogEvent will typically be the plain text version of the message being spoken in the `ssml` element.
 
 Figure 11 shows the structure of an event with the _eventType_ of _utterance_.
 This object contains just one mandatory parameter with the key-name _dialogEvent_.
 The _to_ parameter is optional and by default utterance events are public and addressed to all conversants. 
-They can however be addressed to specific conversants and/or made private using the _to_ element of the event.
+They can however be addressed to specific conversants and/or made private using the private fflag in the _to_ element of the event.
 A private utterance event is also termed a 'whisper'.  These can be used to convey instructions and contextual information behind the scenes between conversants.
 
 The _dialogEvent_ element must contain a valid dialog event object as specified in [[2] Interoperable Dialog Event Object Specification Version 1.0.2](https://github.com/open-voice-interoperability/docs/blob/main/specifications/DialogEvents/1.0.2/InteropDialogEventSpecs.md)
 
-Compliant Open-Floor dialog agents do not need to respond to any unsupported features or keys in the dialog event..   
+Compliant Open-Floor dialog agents must respond to the content in the `text` feature.  All other content can be ignored and the agent will still be considered compliant.
 
-##### 1.10.1 dialogEvent Text Feature
+##### 1.10.1 dialogEvent `text` Feature
 
-The _text_ feature is **mandatory** in all dialog events.
+The _text_ feature is **mandatory** in all dialog events.  The text feature contains content that is capable of being verbalized as an utterance.
 
 |parameter|Description|
 |-|-|
-|_mimeType_|text/plain
-|_speakerUri_|The _speakerUri_ should be a unique identifier to the speaker that was or will be perceived as the social actor in the conversation.  Assistants that are channeling utterances from other agents or speakers should keep the _speakerUri_ of the original speaker.   This is one of the main distinctions between channeling and mediation.  It is the responsibility of the agent that generates the event to decide which _speakerUri_ to attach to the event.
-|_value_|Any number of values are allowed as strings in the _tokens_ section.  When concatenated together the _tokens_ should represent the orthographic representation of the utterance.
-|_valueUrl_|Any number of value URLs are allowed in the tokens section.  These URLs should locate content of type 'text/plain' and when downloaded and concatenated together the _tokens_ should represent the orthographic representation of the utterance.
+|_mimeType_|text/plain|
+|_speakerUri_|The _speakerUri_ should be a unique identifier to the speaker that was or will be perceived as the social actor in the conversation.  Assistants that are channeling utterances from other agents or speakers should keep the _speakerUri_ of the original speaker.   This is one of the main distinctions between channeling and mediation.  It is the responsibility of the agent that generates the event to decide which _speakerUri_ to attach to the event.|
+|_value_|Any number of values are allowed as strings in the _tokens_ section.  When concatenated together the _tokens_ should represent the orthographic representation of the utterance.|
+|_valueUrl_|Any number of value URLs are allowed in the tokens section.  These URLs should locate content of type 'text/plain' and when downloaded and concatenated together the _tokens_ should represent the orthographic representation of the utterance.|
+
+##### 1.10.2 dialogEvent `html` Feature
+
+The _html_ feature is optional and can be used in dialog events to include HTML-formatted content for visual presentation.
+
+|parameter|Description|
+|-|-|
+|_mimeType_(s)|text/html</br>application/xhtml+xml|
+|"lang"||
+|"encoding"|As per the 'charset' often associated with the mime-type|
+|_speakerUri_|As above|
+|_value_|Any number of values are allowed as srtings in the _tokens_ section. Each token value should be 'valid' HTML in its own right. In general just include one _value_ document.|
+|_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.
+
+##### 1.10.3 dialogEvent `audio` Feature
+
+The _audio_ feature can be used in dialog events to transmit audio content. 
+
+|parameter|Description|
+|-|-|
+|_mimeType_(s)|audio/mpeg</br>audio/mp4</br>audio/aac</br>audio/ogg</br>audio/opus</br>audio/webm</br>audio/wav</br>audio/flac</br>audio/x-flac</br>|
+|_speakerUri_|As above|
+|_value_|Inline audio content is not supported. Use _value_Url_ instead|
+|_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.  They are ordered in the order that the audio should be presented|
+
+##### 1.10.4 dialogEvent `ssml` Feature
+
+The _ssml_ feature can be used in dialog events to include SSML [[8] Speech Synthesis Markup Language](https://www.w3.org/TR/speech-synthesis11/) for richer speech synthesis rendering.
+
+|parameter|Description|
+|-|-|
+|_mimeType_|application/ssml+xml |
+|_speakerUri_|As above|
+|_value_|Any number of _value_(s) are permitted in the _tokens_ section. Each _value_ should be a _<speak>_ element wrapping valid SSML as per |
+|_valueUrl_|s)|audio/mpeg</br>audio/mp4</br>audio/aac</br>audio/ogg</br>audio/opus</br>audio/webm</br>audio/wav</br>audio/flac</br>audio/x-flac</br>|
+|_speakerUri_|As above|
+|_value_|Any number of _value_ strings can be contained in the _tokens_ section. Each _value_ string should be a valid SSML `<speak>` element.|
+|_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.  They are ordered in the order that the audio should be presented|
+
 
 ### 1.11 Extensible Dialog Event Features (informative)
 
@@ -1394,6 +1460,7 @@ The structure of a JSON conversation envelope is defined as a JSON Schema locate
 [5] **IETF RFC 8141 Uniform Resource Names (URNs)**[https://datatracker.ietf.org/doc/html/rfc8141] \
 [6] **IETF RFC 4151 The Tag URL Scheme**[https://www.rfc-editor.org/rfc/rfc4151] \
 [7] **AI Multi-Agent Interoperability Extension for Managing Multiparty Conversations.** [https://arxiv.org/abs/2411.05828]
+[8] **W3C Speech Synthesis Markup Language (SSML) Version 1.1** [https://www.w3.org/TR/speech-synthesis11/]
 
 ## 5 Glossary of Terms
 
