@@ -302,9 +302,11 @@ The schema for the version of the envelope specification can be found in [https:
 
 ##### Figure 6. Mandatory elements of the _conversation_ object.
 
-The conversation object carries persistent information related to the current conversation.  It is the responsibility of the floor manager (or the agent playing the role of the floor manager) to maintain the contents of this section which should be included in all envelopes.  The only exception to this is the _persistentState_ which is maintaned by the conversants themselves.
+The conversation object carries persistent information related to the current conversation. 
 
 As shown in Figure 6, the conversation section contains just one piece of mandatory information - the id of the conversation.  The id  should be a unique identifier for the current conversation with the user.  Persistent information relating to this current conversation can be keyed to this id.   The id  can be any arbitrary length character sequence that can be represented as a string in JSON.
+
+It is the responsibility of the floor manager (or the agent playing the role of the floor manager) to maintain the contents of the conversation section.  Conversants only need to include the 'id' section in any envelopes sent. Any other sections that are included by conversants will be replaced by the floor manager to ensure accuracy and consistency.
 
     {
       "openFloor": {
@@ -314,8 +316,12 @@ As shown in Figure 6, the conversation section contains just one piece of mandat
 
           "assignedFloorRoles" : { 
             "convener" : ["tag:dev.buerokratt.ee,2025:0001"] 
-            "floorGranted" : ["tag:user1.example.com,2025:1234", "tag:agent2.example.com,2025:5678"]
           },
+
+          "floorGranted" : [
+            "tag:user1.example.com,2025:1234", 
+            "tag:agent2.example.com,2025:5678"
+          ],
 
           "conversants" :[
               {      
@@ -329,10 +335,6 @@ As shown in Figure 6, the conversation section contains just one piece of mandat
                       "role": "Immigration Specialist",
                       "synopsis": "Immigration specialist as part of the Beurocrat system.",
                       "openFloorRoles": {"convener":True}
-                  },
-                  "persistentState": {
-                    "uniqueKey1": { .. object .. },
-                    "uniqueKey2": { .. object .. } 
                   }
               },
               {      
@@ -363,11 +365,7 @@ Figure 7 shows other additional elements in the conversation object.
 
 The _conversants_ section is optional if there are two or less conversants in the conversation.   It is mandatory if there are more than two conversants in the current conversation or there is an _assignedFloorRoles_ section in the _conversation_.   It is a good practice to always have a _conversants_ section.   
 
-The _conversant_ section contains a list of all the conversants in the conversation. Each conversant object should contain an _identification_ key and an optional _persistentState_ key. 
-
-The _identification_ section should be a copy of the _identification_ section of the agent's manifest as defined in [4].   
-
-The _persistentState_ is optional and consists of key-value pairs where the values can be any arbitrary JSON object.  The purpose of this is to enable agents to persist information that is important to maintaining internal state in the conversation.  Message senders should only add new key-value pairs tothe _persistentState_ in their own _conversants_ member object and should remove those that are no longer necessary. There are currently no restrictions placed on the content of persistent objects.   Privacy and security issues apply here. It is suggested that the data in these sections is encrypted but this is not mandatory.  Consideration should also be given to the size of any objects in this section as this might affect the downstream performance of the remaining conversation.
+The _conversant_ section contains a list of all the conversants in the conversation. Each conversant object should contain an _identification_ key. The _identification_ section should be a copy of the _identification_ section of the agent's manifest as defined in [4].   
 
 ##### 1.6.2 The _assignedFloorRoles_ section
 
@@ -382,7 +380,7 @@ The roles that a floor manager can assign are listed below.  The default value o
 |Open-Floor Role|Description|Default manifest role|Max conversants|
 |-|-|-|-|
 |`convener`|The agent is acting as floor convener, dealing with invites and floor grant requests|False|1|
-|`floorGranted`|The conversant is welcome to send utterances|n/a|unlimited|
+|`floorParticipant`|The conversant is welcome to send utterances|n/a|unlimited|
 
 All conversants are currently assumed to be capable of having the `floorGranted` role so it is not relevant to include this in the manifest for the agent.
 
@@ -569,8 +567,8 @@ The _html_ feature is optional and can be used in dialog events to include HTML-
 |"lang"||
 |"encoding"|As per the 'charset' often associated with the mime-type|
 |_speakerUri_|As above|
-|_value_|Any number of values are allowed as srtings in the _tokens_ section. Each token value should be 'valid' HTML in its own right. In general just include one _value_ document.|
-|_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.
+|_value_|Any number of values are allowed as strings in the _tokens_ section. Each token value should be 'valid' HTML in its own right.  For example an element within an `<html>` tag or any other bare html content such as `<h1>` or bare text. In general just include one _value_ document.|
+|_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.|
 
 ##### 1.10.3 dialogEvent `audio` Feature
 
@@ -580,7 +578,7 @@ The _audio_ feature can be used in dialog events to transmit audio content.
 |-|-|
 |_mimeType_(s)|audio/mpeg</br>audio/mp4</br>audio/aac</br>audio/ogg</br>audio/opus</br>audio/webm</br>audio/wav</br>audio/flac</br>audio/x-flac</br>|
 |_speakerUri_|As above|
-|_value_|Inline audio content is not supported. Use _value_Url_ instead|
+|_value_|Inline audio content should be represented as base64 encoding and match the mime type specified.  If more than one token value is supplied then all values must be in the same mime type and will be interpreted as sequential audio in the order presented.|
 |_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.  They are ordered in the order that the audio should be presented|
 
 ##### 1.10.4 dialogEvent `ssml` Feature
@@ -1427,21 +1425,20 @@ In the table below 'forward to convener' means that the event is forwarded to th
 
 A minimal floor manager will therefore exhibit the following behaviours.   
 
-|event|pre condition|source=not-convener|source=convener|minimal convener|
+|event|type|source=not-convener|source=convener|minimal convener|
 |-|-|-|-|-|
-|_utterance_|is_conversant=True<br>has_floor=True|forward to INTENDED|forward to INTENDED|Authorize|
-|_utterance_|is_conversant=True<br>has_floor=False||||
-|_invite_||forward to CONVENER|forward to INTENDED|Authorize|
-|_uninvite_|is_conversant=True|forward to CONVENER|forward to INTENDED|Ignore|
-|_declineInvite_|_invite_|forward to ALL|forward to ALL||
-|_acceptInvite_|_invite_|forward to ALL|forward to ALL||
-|_bye_|_invite_|forward to ALL|forward to ALL||
-|_getManifests_||forward to INTENDED|forward to INTENDED||
-|_publishManifests_||forward to INTENDED|forward to INTENDED||
-|_requestFloor_||forward to CONVENER|send a _grantFloor_ to INTENDED|Authorize|
-|_grantFloor_||forward to CONVENER|forward to INTENDED||
-|_yieldFloor_||forward to INTENDED|forward to INTENDED||
-|_revokeFloor_||forward to CONVENER|forward to INTENDED|Authorize|
+|_utterance_|Pass-Through|forward to INTENDED|forward to INTENDED|Authorize|
+|_invite_|Delegate to Convener|forward to CONVENER|forward to INTENDED|Authorize|
+|_uninvite_|Delegate to Convener|forward to CONVENER|forward to INTENDED|Ignore|
+|_declineInvite_|Pass-Through|forward to ALL|forward to ALL||
+|_acceptInvite_|Pass-Through|forward to ALL|forward to ALL||
+|_bye_|Pass-Through|forward to ALL|forward to ALL||
+|_getManifests_|Pass-Through|forward to INTENDED|forward to INTENDED||
+|_publishManifests_|Pass-Through|forward to INTENDED|forward to INTENDED||
+|_requestFloor_|Delegate to Convener|forward to CONVENER|send a _grantFloor_ to INTENDED|Authorize|
+|_grantFloor_|Delegate to Convener|forward to CONVENER|forward to INTENDED||
+|_yieldFloor_|Pass-through|forward to INTENDED|forward to INTENDED||
+|_revokeFloor_|Delegate to Convener|forward to CONVENER|forward to INTENDED|Authorize|
 
 #### 2.3 Ignoring events with protocols that require a response
 
@@ -1546,4 +1543,12 @@ This section documents some of the key design decisions that were made by the te
 - Moved dialogHistory into Invite event</br>
 - Removed Context event</br>
 - Expanded the multi-party conversation section including Convener and Floor Management sections. </br>
-||
+
+TO DO
+- Remove persistentState from conversation object
+- move floorGranted out of the roles section into its own section.
+- (put this in default floor behaviour.) An invite will add a conversant to the conversant list.   They will be removed again on declineInvite or Bye, uninvite. Events will not be forwareded by the floor manager from any agents or users that are not currently considered a conversant.  
+- Make the privacy flag irrelevant for all events apart from utterance.  (allow it but ignore it.)
+
+-Finish table for floor manager.   with delegate/dont delegate to convenere PLUS state changing actions such as adding or removing from conversants, adding or removing from hasFloor, and transmuting requestFloor into grantFloor/revokeFloor.  ISSUE does the convener authorize a request floor or do they actually change the message.
+||  
