@@ -8,6 +8,10 @@
             "assignedFloorRoles": {
                 "convener": ["tag:dev.travelbot,2025:0001"]
             },
+            "floorGranted": [
+                "tag:userproxy.com,2025:abc123",
+                "tag:dev.travelbot,2025:0001"
+            ],
             "conversants": [
                 {
                     "identification": {

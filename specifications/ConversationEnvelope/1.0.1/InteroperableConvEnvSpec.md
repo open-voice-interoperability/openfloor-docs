@@ -363,13 +363,15 @@ Figure 7 shows other additional elements in the conversation object.
 
 ##### 1.6.1 The _conversants_ section
 
-The _conversants_ section is optional if there are two or less conversants in the conversation.   It is mandatory if there are more than two conversants in the current conversation or there is an _assignedFloorRoles_ section in the _conversation_.   It is a good practice to always have a _conversants_ section.   
+The _conversants_ section is optional if there are two or less conversants in the conversation.   It is mandatory if there are more than two conversants in the current conversation or there is an _assignedFloorRoles_ or _floorGranted_ section in the _conversation_.   It is a good practice to always have a _conversants_ section.   
 
 The _conversant_ section contains a list of all the conversants in the conversation. Each conversant object should contain an _identification_ key. The _identification_ section should be a copy of the _identification_ section of the agent's manifest as defined in [4].   
 
 ##### 1.6.2 The _assignedFloorRoles_ section
 
 The _assignedFloorRoles_ dictionary is a record of which conversants have been assigned specific Open-Floor roles by the floor manager. Each role maps to an array of speakerURIs for agents currently assigned that role, with some roles (like convener) having a maximum cardinality of 1. Any conversants that are assigned roles must also be listed in the "conversants" section.
+
+The _assignedFloorRoles_ dictionary is optional in the conversation section. It is good practice to include it but if it is absent then it is assumed that no special roles have been assigned.
 
 Conversants advertise their willingness to perform certain roles in the _Identification.openFloorRoles_ section of their manifest.   Roles are only assigned to agents by the floor manager. There is no obligation of a floor manager to assign an agent a certain role.  
 
@@ -380,9 +382,16 @@ The roles that a floor manager can assign are listed below.  The default value o
 |Open-Floor Role|Description|Default manifest role|Max conversants|
 |-|-|-|-|
 |`convener`|The agent is acting as floor convener, dealing with invites and floor grant requests|False|1|
-|`floorParticipant`|The conversant is welcome to send utterances|n/a|unlimited|
 
-All conversants are currently assumed to be capable of having the `floorGranted` role so it is not relevant to include this in the manifest for the agent.
+##### 1.6.3 The _floorGranted_ section
+
+The _floorGranted_ section is maintained by the floor manager and keeps a record of the conversants who are currently granted floor rights using the convener to make floor grant decisions if a convener is assigned.  The section contains an array of speakerURIs for conversants who have floor rights.
+
+The _floorGranted_ list is optional in the _conversation_ section. It is good practice to include it but if it is absent then it is assumed that all conversants have floor grant rights.
+
+Rights to the floor are granted when a _grantFloor_ event is sent and revoked when a _revokeFloor_ event is sent. By default all conversants have floor rights when they join a conversation. 
+
+Floor grants are not policed by the floor manager and any conversant can send an _utterance_ to the floor regardless of their floor grant status. However, this is considered bad etiquette and may result in the convener revoking floor rights or even uninviting conversants.
 
 #### 1.7 Sender Object
 
@@ -1537,7 +1546,7 @@ This section documents some of the key design decisions that were made by the te
 |1.0.0|2-25.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
 |1.0.1||
 - Added assignedFloorRoles</br>
-- Added floorGranted to assignedFloorRoles</br>
+- Added floorGranted section to conversation object</br>
 - Added convener to assignedFloorRoles
 - Added acceptInvite</br>
 - Moved dialogHistory into Invite event</br>
@@ -1546,7 +1555,6 @@ This section documents some of the key design decisions that were made by the te
 - Removed persistentState from conversants</br>
 
 TO DO
-- move floorGranted out of the roles section into its own section.
 - (put this in default floor behaviour.) An invite will add a conversant to the conversant list.   They will be removed again on declineInvite or Bye, uninvite. Events will not be forwareded by the floor manager from any agents or users that are not currently considered a conversant.  
 - Make the privacy flag irrelevant for all events apart from utterance.  (allow it but ignore it.)
 
