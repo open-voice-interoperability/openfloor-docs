@@ -196,7 +196,7 @@ Authorization, Authentication, Accounting, and Security specifications are outsi
 
 #### 1.3 Nomenclature
 
-This specification uses ‘camelCase’ (i.e. no spaces with new words being capitalized) for all nominal property names, for example, _eventType_ and _persistentState_.  
+This specification uses ‘camelCase’ (i.e. no spaces with new words being capitalized) for all nominal property names, for example, _eventType_ and _dialogHistory_.  
 
 #### 1.4 Message Envelope Structure
 
@@ -1517,8 +1517,8 @@ This section documents some of the key design decisions that were made by the te
 |whispers or private utterances|_Question_:Now that _dialogEvent_ parameters are embedded in events such as _invite_ and there is support for the _private_ parameter in the _to_ section of an _utterance_ event, can we retire _whisper_ in favor of private _utterance_ events instead??<br>_Answer:_ Yes. The _whisper_ event has been removed.  The concept remains.|
 |_context_ in dialogEvents|_Question:_ We added -context- into dialog events to support context on utterances. The intention was that this would allow the passing of context in such a way that things like language type and dialect were fully supported. However it is located outside of the 'text' feature so that is not correct.   Would we not be better simply removing _context_ as a specific extension to dialog events and considering adding 'instruct' and 'context' dialogEvent parameters to events like _invite_ rather than the generic _dialogEvent_?   That way we can more directly support the established LLM paradigm of instructions and context in all messages where _dialogEvents_ are used to convey instructions from one agent to another.<br>_Answer:_It was agreed that context would become a separate dialog event with one standard parameter (dialogHistory) and permitting any arbitrary additional keys and data structures.| 
 |_to_ on _utterance_ gives away floor?|_Question:_Does _to_ on an utterance imply giving the floor to the receiver?<br>_Answer:_This remains undefined for now.|
-|Size of conversation object|_Question:_ Do we need to worry about the size of the conversation object and should we allow full manifests and unlimited persistentState objects etc.<br>_Answer_ The size of the conversation object is not a great concern.  We will allow the conversant section to optionally contain the capabilities and not put any limits on the size of persistenState.|
-|persistentState|_Question:_ Do we need to keep the persistent state? Should clients modify it directly or should there be a separate event and use the floor to modify it?<br>_Answer:_PersistentState is retained for now but we anticipate that most agents will utilize their own session management based on conversation ID.  Clients modify their own persistentState and the floor should return it unaltered to the client.  We recognize that persistentState may not be useful and may have serious state management issues when used in t a multi-party conversation.|
+|Size of conversation object|_Question:_ Do we need to worry about the size of the conversation object and should we allow full manifests and unlimited persistentState objects etc.<br>_Answer_ The size of the conversation object is not a great concern.  We will allow the conversant section to optionally contain the capabilities.|
+|persistentState|_Question:_ Do we need to keep the persistent state? Should clients modify it directly or should there be a separate event and use the floor to modify it?<br>_Answer:_PersistentState has been removed from the specification as it was recognized that it may not be useful and may have serious state management issues when used in a multi-party conversation. Most agents will utilize their own session management based on conversation ID.|
 |should _to_ always be present?|_Question_:Should we insist on a _to_ in all events and have an explicitly way of indicating 'all'?  <br>_Answer:_ If _to_ is omitted then the event is intended for all recipients.  This allows simple systems with one user and one agent to simply omit the _to_ section.|
 |Include "reason" in all events|_Question_:Why not allow an optional "reason" parameter in all events? It might not be as helpful in all events, but we might as well allow it for simplicity.<br>_Answer_: Agreed - make reason an optional key in all events and allow it to be open text with special reserved words in the form '@timed-out'. Include a list of supported reserve words and also indicate in individual events how these reserved words might apply in that context.|
 |Arbitrary text in "reasons"|_Question:_ Should we let "reasons"  contain arbitrary text?</br>_Answer_: Yes. We will make reason an optional key in all events and allow it to be open text with special reserved words in the form '@timed-out'. Include a list of supported reserve words and also indicate in individual events how these reserved words might apply in that context.|
@@ -1543,9 +1543,9 @@ This section documents some of the key design decisions that were made by the te
 - Moved dialogHistory into Invite event</br>
 - Removed Context event</br>
 - Expanded the multi-party conversation section including Convener and Floor Management sections. </br>
+- Removed persistentState from conversants</br>
 
 TO DO
-- Remove persistentState from conversation object
 - move floorGranted out of the roles section into its own section.
 - (put this in default floor behaviour.) An invite will add a conversant to the conversant list.   They will be removed again on declineInvite or Bye, uninvite. Events will not be forwareded by the floor manager from any agents or users that are not currently considered a conversant.  
 - Make the privacy flag irrelevant for all events apart from utterance.  (allow it but ignore it.)

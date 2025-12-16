@@ -28,12 +28,6 @@
                         "department": "Reservations and Customer Service",
                         "role": "Reservation Specialist",
                         "synopsis": "Reservation specialist as part of the Travelbot system."
-                    },
-                    "persistentState": {
-                        "conversationEnded": null,
-                        "conversationActive": true,
-                        "conversationPaused": false,
-                        "conversationResumed": null
                     }
                 }
             ]
