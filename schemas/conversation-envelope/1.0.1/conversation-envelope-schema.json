@@ -69,13 +69,6 @@
                     },
                     "additionalProperties": false
                   },
-                  "persistent_state": {
-                    "type": "object",
-                    "description": "Container for an arbitrary set of key value pairs to be persisted.",
-                    "additionalProperties" : {
-                        "type" : "object"
-                    }
-                  },
                   "additionalProperties": false
                 }
               }
@@ -99,6 +92,13 @@
                 "items": {
                   "$ref": "#/$defs/uri"
                 }
+              }
+            },
+            "floorGranted": {
+              "type": "array",
+              "description": "Array of speakerURIs for conversants who are currently granted floor rights.",
+              "items": {
+                "$ref": "#/$defs/uri"
               }
             }
           }

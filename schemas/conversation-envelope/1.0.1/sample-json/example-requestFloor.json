@@ -5,9 +5,12 @@
       },
       "conversation": {
         "id": "someUniqueIdForTheConversation",
-        "currentRoles": {
+        "assignedFloorRoles": {
           "convener": ["tag:some_Convener.com,2025:1234"]
-        }
+        },
+        "floorGranted": [
+          "tag:some_Convener.com,2025:1234"
+        ]
       },
       "sender": {
         "speakerUri": "tag:agentRequestingFloor.com,2025:1234"
