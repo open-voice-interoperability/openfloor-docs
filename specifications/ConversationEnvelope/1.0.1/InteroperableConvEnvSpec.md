@@ -5,11 +5,11 @@
 **The Open Floor Project**\
 **Open Voice Interoperability Initiative - LF AI & Data Foundation**
 
-**DRAFT SUBJECT TO CHANGE** \
+**RELEASED** \
 **Version 1.0.1**
 
 *_Editor-in-Chief: David Attwater_*\
-*_Contributors: Leah Barnes, Emmett Coin,  Deborah Dahl, Diego Gosmar, Jim Larson, Rainer Türner, Dirk Schnelle-Walka, Allan Wylie_*
+*_Contributors: Leah Barnes, Emmett Coin,  Deborah Dahl, Diego Gosmar, Jim Larson, Rainer Türner, Dirk Schnelle-Walka, Allan Wylie, Andreas Zettle_*
 
 ## TABLE OF CONTENTS
 - [0 SCOPE AND INTRODUCTION](#0-SCOPE-AND-INTRODUCTION)
@@ -124,7 +124,7 @@ Any component or agent that has created a conversation and invited conversants t
 
 The floor manager maintains the _conversation_ section of the envelope. Using simple deterministic rules, the floor manager decides which agents should receive which events. In general, all events are sent to all conversants to decide which events to respond to (or not). There are some special cases for certain events, particularly regarding the _private_ flag. 
 
-The floor manager should exhibit predictable, autonomic behaviour that is standardized. All discretionary actions such as handling invitations or floor requests can be delegated by the floor manager to a designated convener agent. In general autonomic floor behaviour will be sufficient for conversations with a single user and a single agent at any time. Multi-party conversations will likely be unusable without a convener unless all of the participants are extremely disciplined in their behaviours.
+The floor manager should exhibit predictable, autonomic behaviour that is standardized. All discretionary actions such as handling invitations or floor requests can be delegated by the floor manager to a designated convener agent. In general autonomic floor behaviour will be sufficient for conversations with a single user and a single agent at any time. In the case of Multi-party conversations a convener is likely to be required unless all of the participants are extremely disciplined in their behaviours.  
 
 See the section on [Minimal Behaviours for a Floor Manager](#minimal-behaviours-for-a-floor-manager) for more details.
 
@@ -152,16 +152,16 @@ Note that any conversant can request floor rights on behalf of themself or anoth
 
 #### 0.5 Discovery
 
-Agents can ask other agents if they are able to satisfy a certain enquiry or whether they can recommend another agent for the task.  This pattern is called 'discovery'.  The initiating agent asks another agent to 'find' an assistant and includes details of the task to this agent.  The recipient can then respond by:
+Agents can ask other agents if they are able to satisfy a certain enquiry or whether they can recommend another agent for the task.  This pattern is called 'discovery'.   In the discovery pattern, the initiating agent asks another agent for a list of agents includes details of the task to this agent.  The recipient can then respond by:
 
 - Proposing themself for the task (i.e. 'accept' the request to do a task)
 - Proposing one or more agents for the task with a rating (i.e. act as a discovery agent)
 - Proposing one or more agents to help 'find' an agent for the task (i.e. recommend another discovery agent)
 - Proposing no agents (i.e. the agent cannot do the task or recommend any other agent)
 
-The requesting agent can then choose to invite the proposed agent to the conversation, or simply speak directly to the proposed agent if they are already party to the conversation.
+In all cases the requesting agent receives one or more manifest which publishes the proposed agents identity and capabilities in a standard form.
 
-This feature can also be used to ask an agent for a manifest of its own capabilities.
+The requesting agent can then choose to invite the proposed agent to the conversation, or simply speak directly to the proposed agent if they are already party to the conversation.  This feature can also be used to ask an agent for a manifest of its own capabilities.
 
 By combining this discovery mechanism with the delegation and channelling patterns mentioned above rich patterns of agent interaction can emerge. Some agents can specialize as 'discovery agents' whose only role is to provide recommendations of other agents. This provides the conversational equivalent of a web search.  Agents can also recommend themselves for some enquiries and recommend other agents for others. This allows, for example, for a primary assistant to perform day to day tasks and recommend other agents for less common tasks. Agents can ask one or more agents to assist with this search who in turn can ask other agents.   Planning agents may propose steps to be taken in achieving a plan and then an orchestrating agent can then discover and invite agents to achieve parts of the plan.
 
@@ -461,9 +461,10 @@ Figure 9 shows the structure of the _events_ object.  This should be an array of
 
 Each event object must have an _eventType_, which is a string.  Other parameters may be present depending on the eventType. The _parameters_ object is a dictionary of parameter objects with standard key names specific to the event-type.  Some eventTypes support a 'bare' mode without any parameters. 
 
-The optional _to_ section contains two parameters. The first is a _speakerUri_ of the target recipient.  The second is the _serviceUrl_ which is a valid URL of the assistant that the message is intended for.   The _to_ section is optional. If it is present then it must contain a _ServiceUrl_ or a _speakerUri_ or both.  If the _to_ section is not present then is can be assumed that the event is intended for all recipients of the envelope.  
+The optional _to_ section contains three parameters. The first is a _speakerUri_ of the target recipient.  The second is the _serviceUrl_ which is a valid URL of the assistant that the message is intended for.   The _to_ section is optional. If it is present then it must contain a _ServiceUrl_ or a _speakerUri_ or both.  If the _to_ section is not present then is can be assumed that the event is intended for all recipients of the envelope.   The third parameter is a _private_ boolean parameter which, when set to true, indicates that the event is only intended for the _to_ agent alone.  
 
-The _to_ section also contains a _private_ boolean parameter which, when set to true, indicates that the event is only intended for the _to_ agent alone.  If true then the event should not be copied by any intermediary agent to any other agents in a multi-participant conversation.  If it is not defined it is assumed to be _false_ i.e. any message intended for another recipient can be copied to other participants in the conversation for context. If there is not a _to_ section then the event is by default assumed to be public.
+The _private_ parameter is used by the floor manager to decide how to direct _utterance_ events. If true then the event is only sent to the designated agent and is not be copied by the floor manager to any other agents in a multi-participant conversation.  If it is not defined it is assumed to be _false_ i.e. any message intended for another recipient can be copied to other participants in the conversation for context. If there is not a _to_ section then the event is by default assumed to be public.  Other event types can have a _private_ parameter defined but this will not stop the floor manager sharing these events with all parties in the conversation.  For more detail see [Section 2.2](#22-Minimal-Conversation-Floor-Manager-Behaviors-on-Receipt-of-Events)
+
 
         "events ": [
           ...
@@ -501,13 +502,13 @@ The following are valid values for _eventTypes_.
 
 * **discovering other agents and establishing their capabilities**
   * _getManifests_ - Ask an agent to recommend themself or another agent for a task.
-  * _publishManifests_ - Return a list of manifests for the current assistant.
+  * _publishManifests_ - Return a list of manifests for agents that can meet the request.
 
 * **managing who has the conversational floor** (support for multi-party conversations and floor passing between agents)
   * _requestFloor_ - Used by a conversant to request the floor.
-  * _grantFloor_ - Used by a convener agent to offer the floor to another conversant. 
-  * _revokeFloor_ - Used by a convener agent to revoke the floor from another conversant. 
-  * _yieldFloor_ - Used by a conversant to yield the floor to another conversant.
+  * _grantFloor_ - Used by a convener agent to offer the floor to a conversant. 
+  * _revokeFloor_ - Used by a convener agent to revoke the floor from a conversant. 
+  * _yieldFloor_ - Used by a conversant to yield the floor.
 
 The following sections define these event objects in more detail.
 
@@ -615,16 +616,9 @@ The _ssml_ feature can be used in dialog events to include SSML [[8] Speech Synt
 
 ### 1.11 Extensible Dialog Event Features
 
-The features in Dialog Events are intentionally intended to be extensible.  This specification does not limit the features that can be put into dialog events.
+The features in Dialog Events are intentionally intended to be extensible.   In addition to the dialog features described above any other arbitrary features can be added with any mime type.
 
-The current version of this specification mandates only the text feature in each dialog event.  Future versions are likely to support and standardize additional event features such as:
-
-* _ssml_ to describe how text should be rendered as speech.
-* _speech_ to send raw speech for output or input.
-* _image_ to send an accompanying image.
-* _video_ to send an accompanying video.
-
-There are no limitations on the features that are added to a dialog event.  This enables agents to exchange any media that they wish in addition to the text message.  For example, a video feature intended to represent Video Conversational agent communications (i.e. Avatar communications) could be added as shown in Figure 13.  This example is informative only.
+For example, a video feature intended to represent Video Conversational agent communications (i.e. Avatar communications) could be added as shown in Figure 13.  This example is informative only.
 
       "features": {
         ...
@@ -734,7 +728,7 @@ It is possible to invite an agent to a conversation without giving it any other 
 
 ##### Figure 16. A typical dialog envelope for an invite, including a voiced transfer prompt and dialog history in the invite event.
 
-Invite events may be accompanied by additional events and contain optional parameters. The _invite_ event can include an optional _dialogHistory_ parameter which is a simple list of dialog events containing some or all of the utterances in the dialog. It is good practice to order these in startTime order (in universal time) with the most recent event being the last item in the list. It is at the discretion of the sender of the _invite_ to decide how much history to include and whether to omit or anonymize certain dialogEvents in order to maintain security and confidentiality. For example, the conversational floor may decide to send the last 'N' (e.g. N=4) events in the dialog as if the invited agent had been at the floor for those N dialog turns. If the agents had not been entitled to receive some of those events then these would also be omitted from the dialogHistory array or anonymized or redacted in some fashion.
+Invite events may be accompanied by additional events and contain optional parameters. The _invite_ event can include an optional _dialogHistory_ parameter which is a simple list of dialog events containing some or all of the utterances in the dialog. It is good practice to order these in startTime order (in universal time) with the most recent event being the last item in the list. It is at the discretion of the sender of the _invite_ to decide how much history to include and whether to omit or anonymize certain dialogEvents in order to maintain security and confidentiality. For example, the inviting agent may decide to send the last 'N' (e.g. N=4) events in the dialog as if the invited agent had been at the floor for those N dialog turns. If the agents had not been entitled to receive some of those events then these could also be omitted from the dialogHistory array or anonymized or redacted in some fashion.
 
 Figure 16 shows a conversation envelope where the inviting agent tells the user that they are inviting another agent to speak with them. Then the invite event issues the invitation with dialog history to help the invited bot respond appropriately.
 
@@ -794,7 +788,7 @@ The following special tokens have particular meaning in this event.
             "to": {
               "speakerUri": "tag:some_Convener.com,2025:"
             },
-            "reason": "@ready to support this request"
+            "reason": "Ready to support this request"
           }
         ]
       }
@@ -867,7 +861,7 @@ The following special _reason_ tokens have particular meaning in this event.
 
 Figure 20. A minimal _bye_ envelope detaching an agent from a conversation.
 
-When an agent wants to leave the conversation it sends a _bye_ event.  This message indicates that the agent is leaving the dialog, and if it currently has control it also relinquishes the floor.   An example of the _bye_ event is shown in Figure 20. It has no _parameters_.  The optional _to_ object can be included but it is not neccessary.
+When an agent wants to leave the conversation it sends a _bye_ event.  This message indicates that the agent is leaving the dialog.   An example of the _bye_ event is shown in Figure 20. It has no _parameters_.  The optional _to_ object can be included but it is not neccessary.
 
     {
       "openFloor": {
@@ -1054,15 +1048,15 @@ The target assistant should return a _publishManifests_ containing any agents th
 
 ##### Figure 24. Use case #3. Asking a site or assistant to recommend one or more assistants that can help with a certain task.
 
-Finally, Figure 24 shows use case #3 where a discovery agent is being asked to recommend some other agent to service a specific request.  The returned _proposeAssistant_ event should contain the manifests of any recommended assistants for the task.  
+Finally, Figure 24 shows use case #3 where a discovery agent is being asked to recommend some other agent to service a specific request.  The returned _publishManifests_ event should contain the manifests of any recommended assistants for the task.  
 
 In this example the parameter _recommendScope_ has the value "external" which indicates that the assistant is not being invited to recommend itself for the task.  
 
 In the most general case, when requested, assistants can also recommend their own services and/or the services of other agents.  The _recommendScope_ "all" is used to indicate this. 
 
-The optional _to_ object can be used to indicate which agent is the intended recipient of the event.  If absent then all recipients should consider the request directed at them, for all the assistants in the conversation could be simultaneously asked to to supply their own manifests or make recommendations.
+The optional _to_ object can be used to indicate which agent is the intended recipient of the event.  If absent then all recipients should consider the request directed at them, i.e. all the conversants in the conversation are being invited simultaneously to to supply their own manifests or make recommendations.
 
-As with the invite event, there is no requirement for a _speakerUri_ on a _getManifests_ event.  If one is provided then it up to the receiving agent to decide how to take it into account.  If the event is addressed to a _serviceUrl_ without an _speakerUri_ then it is best practice to return all the manifests associated with that _serviceUrl_.  If a _speakerUri_ is sent then it is best practice to return only the manifest associated with just that _speakerUri_. If the _speakerUri_ does match then it is best practice to return an empty manifest list.  It may however be helpful for a discovery agent to return manifests of other discovery agents that it thinks might be able to help with the request.
+As with the _invite_ event, there is no requirement for a _speakerUri_ on a _getManifests_ event.  If one is provided then it up to the receiving agent to decide how to take it into account.  If the event is addressed to a _serviceUrl_ without an _speakerUri_ then it is best practice to return all the manifests associated with that _serviceUrl_.  If a _speakerUri_ is sent then it is best practice to return only the manifest associated with just that _speakerUri_. If the _speakerUri_ does match then it is best practice to return an empty manifest list.  It may however be helpful for a discovery agent to return manifests of other discovery agents that it thinks might be able to help with the request.
 
 See section 1.18 for more information on _publishManifests_ event behaviors.
 
@@ -1244,7 +1238,7 @@ This event was added to support multi-agent mixed-initiative conversations, for 
 
 The _grantFloor_ event is used to grant the conversational floor to agents.    
 
-In one use case, the _grantFloor_ event can be sent by floor managers in response to a _requestFloor_ event from an agent. Figure 27 shows a bare _grantFloor_ envelope which might be used for this purpose.  Once this message is received by an agent it is free to send Utterance events to the floor with the expectation that they will be delivered to the designated destination.
+In one use case, the _grantFloor_ event can be sent by floor managers in response to a _requestFloor_ event from an agent. Figure 27 shows a bare _grantFloor_ envelope which might be used for this purpose.  Once this message is received by an agent it is free to send _utterance_ events to the floor with the expectation that they will be delivered to the designated destination.
 
     {
       "openFloor": {
