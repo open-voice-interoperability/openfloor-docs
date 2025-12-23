@@ -91,7 +91,7 @@ Messages that pass between Open-floor agents are termed 'conversation envelopes'
 
 The floor manager is in control of which conversants are engaged in a conversation at any given moment.
 
-To start a conversation, the proxy agent invites a specific dialog agent (e.g. Dialog Assistant A) to take part in a conversation with the user.   Once engaged, the assistantt receives an open-floor message containing a user utterance and sends an utterance back to the user in response.  Once the assistant is done with the interaction they can simply end the interaction or, via the floor, invite another agent to enter the conversation (e.g. Dialogue Assistant B in the diagram).   The change of control of a dialog between two agents is called 'delegation'.
+To start a conversation, the proxy agent invites a specific dialog agent (e.g. Dialog Assistant A) to take part in a conversation with the user.   Once engaged, the assistant receives an open-floor message containing a user utterance and sends an utterance back to the user in response.  Once the assistant is done with the interaction they can simply end the interaction or, via the floor, invite another agent to enter the conversation (e.g. Dialogue Assistant B in the diagram).   The change of control of a dialog between two agents is called 'delegation'.
 
 Dialog Assistants may also engage the services of another dialog assistant behind the scenes to assist with the conversation (e.g. Assistant A engages the services of assistant C to support it in its interaction with the user.)    The controlling agent might choose to pass utterances unaltered to the target agent and may in return pass the target agent's responses unaltered to the user.  This pattern is termed 'channeling'. It is in many ways functionally equivalent to delegating the conversation but the channeling agent passes the messages on or can intervene or override the contribution of the agent to which the conversation is being channeled.  For example, a channelling agent may decide to keep the intent of the utterance but change how the content is rendered.  In a voice interface this might involve things like increasing the volume for the hard of hearing, decreasing the speed of presentation for the cognitively challenged or for non-native speakers, change the voice characteristics of the presentation, or change the language, or change visual characteristics if these are present.
 
@@ -101,7 +101,7 @@ There is no limit to the depth of a channeling or mediation chain and delegation
 
 The patterns described above allow for conversation between one user and multiple agents where it is clear which agent has the conversational floor at any given moment.  As noted the channeling and mediation pattern do allow for more than one conversational agent to be involved in the conversation at the same time.
 
-### 0.4 Multi-Party Conversations
+#### 0.4 Multi-Party Conversations
 
 <img width="350" alt="Multi-Party Conversations" src="round-table-configuration.png">
 
@@ -116,7 +116,7 @@ The multi-party conversation paradigm can also be used as a framework-free agent
 
 #### 0.4.1 Floor Manager
 
-Any component or agent that has created a conversation and invited conversants to it is acting as the 'floor' for the users or agents in that conversation.   For example all three of the folloiwng will act as a floor manager:
+Any component or agent that has created a conversation and invited conversants to it is acting as the 'floor' for the users or agents in that conversation. For example all three of the following will act as a floor manager:
 
 - An open-floor compliant host browser acting as the media interface with a user and inviting agents to that conversation under the control of the user.  
 - A floor-manager component that hosts multi-party conversation with many conversants invited to the floor at once.
@@ -124,17 +124,17 @@ Any component or agent that has created a conversation and invited conversants t
 
 The floor manager maintains the _conversation_ section of the envelope. Using simple deterministic rules, the floor manager decides which agents should receive which events. In general, all events are sent to all conversants to decide which events to respond to (or not). There are some special cases for certain events, particularly regarding the _private_ flag. 
 
-The floor manager should exhibit predictable, autonomic behaviour that is standardized. All descretionary actions such as handling invitations or floor requests can be delegated by the floor manager to a designated convener agent.    In general autonomic floor behaviour will be sufficient for conversations with a single user and a single agent at any time.  Multi-party conversations will likely be unsable without a convenere unless all of the participants are extremely disciplined in their behaviours.
+The floor manager should exhibit predictable, autonomic behaviour that is standardized. All discretionary actions such as handling invitations or floor requests can be delegated by the floor manager to a designated convener agent. In general autonomic floor behaviour will be sufficient for conversations with a single user and a single agent at any time. Multi-party conversations will likely be unusable without a convener unless all of the participants are extremely disciplined in their behaviours.
 
 See the section on [Minimal Behaviours for a Floor Manager](#minimal-behaviours-for-a-floor-manager) for more details.
 
 #### 0.4.2 Convener
 
-In a multi-party conversation the floor will optionally invite a 'Convener' agent to the conversation.  This is an Open-Floor compliant agent but is granted special privileges. The convener acts like the chair of a meeting, mediating which conversants should be invited and if neccessary removing conversants from the conversation.  It also plays a role deciding who is granted floor rights at any given moment.
+In a multi-party conversation the floor will optionally invite a 'Convener' agent to the conversation.  This is an Open-Floor compliant agent but is granted special privileges. The convener acts like the chair of a meeting, mediating which conversants should be invited and if necessary removing conversants from the conversation.  It also plays a role deciding who is granted floor rights at any given moment.
 
 Agents who are willing and able to act as conveners will publish this in their manifest.  The floor manager is the arbiter of whether to invite a convener or not. The identity of the current convener is published in the _conversation_ section of the envelope.   Only one convener is allowed at any one time.
 
-The floor manager redirects certain events that are intended for a particular recipient to the convener. The convener then chooses whether to re-submit these events to the floor manager who will forward them on to the original target conversant.   The convener may also initiate events to manage the conversation such as revoking of granting the floor and un-inviting conversants who are behaviong in a manner that is detrimantal to the conversation . 
+The floor manager redirects certain events that are intended for a particular recipient to the convener. The convener then chooses whether to re-submit these events to the floor manager who will forward them on to the original target conversant.   The convener may also initiate events to manage the conversation such as revoking or granting the floor and un-inviting conversants who are behaving in a manner that is detrimental to the conversation.
 
 Note that any conversant can invite any other conversant to the conversation. The convener will then moderate whether to honor this invite or not.
 
@@ -142,7 +142,7 @@ If the conversation does not have a convener assigned then the floor manager wil
 
 #### 0.4.3 Managing the floor
 
-The floor manager also maintains and publishes a list of which conversants currently have floor rights. (See the [_floorGranted_ section in the conversation envelope](#16-conversation-object) for more details.)
+The floor manager also maintains and publishes a list of which conversants currently have floor rights. (See the [_floorGranted_ section in the conversation object](#16-conversation-object) for more details.)
 
 The Open-Floor protocol uses floor rights to help manage orderly interactions. By default a conversant has the floor until they either choose to yield the floor or the convener explicitly revokes their floor rights.  The floor manager keeps track of the floor status of each conversant but it does not enforce it.   Agents can send an utterance event whenever they choose and it will be propagated by the floor manager to the relevant conversants.  The floor granting and revoking mechanism in Open-Floor is therefore advisory and intended to facilitate orderly co-operation between well-behaved agents.  
 
@@ -150,7 +150,7 @@ The convener can however enforce agent behaviour.  It has a role to monitor even
 
 Note that any conversant can request floor rights on behalf of themself or another conversant.  The convener will then moderate whether to accept this request or not.
 
-### 0.5 Discovery
+#### 0.5 Discovery
 
 Agents can ask other agents if they are able to satisfy a certain enquiry or whether they can recommend another agent for the task.  This pattern is called 'discovery'.  The initiating agent asks another agent to 'find' an assistant and includes details of the task to this agent.  The recipient can then respond by:
 
@@ -165,7 +165,7 @@ This feature can also be used to ask an agent for a manifest of its own capabili
 
 By combining this discovery mechanism with the delegation and channelling patterns mentioned above rich patterns of agent interaction can emerge. Some agents can specialize as 'discovery agents' whose only role is to provide recommendations of other agents. This provides the conversational equivalent of a web search.  Agents can also recommend themselves for some enquiries and recommend other agents for others. This allows, for example, for a primary assistant to perform day to day tasks and recommend other agents for less common tasks. Agents can ask one or more agents to assist with this search who in turn can ask other agents.   Planning agents may propose steps to be taken in achieving a plan and then an orchestrating agent can then discover and invite agents to achieve parts of the plan.
 
-## 0.6 Agent Identity
+#### 0.6 Agent Identity
 
 Agents and human conversants in a conversation need to be able to identify and recongnize each other during a conversation.  Conversants in this standard are located and identified by two parameters:
 
@@ -182,11 +182,11 @@ Examples of valid speakerURI are given below.
 
 - **tag:sandro@w3.org,2004:Sandro**: A Tag URI as per [6]
 - **urn:isbn:978-3-16-148410-0**:  A URN as per [5]. The isbn scheme is used for books.
-- **mailto:info@example.com**: A URI that specifies an email address asociated with an agent
+- **mailto:info@example.com**: A URI that specifies an email address associated with an agent
 - **tel:+1-212-555-1212**: A URI that specifies a phone number associated with an agent
-- **https://openfloor.myopenflooragent.com/agent#3456**: A URI using an http address that could be the same as the agent serviceserviceUrl.
+- **https://openfloor.myopenflooragent.com/agent#3456**: A URI using an http address that could be the same as the agent serviceUrl.
 
-NOTE: This standard is currently agnostic regarding the URI scheme used for an agent. Options for standardizing further might include the regisstration of a specific URN namespace identifier, for example, 'urn:openFloor' [5].  In the short term Tag URIs [6] represent a pragmatic way to generate a unique idenfifier for an agent.  In this document we use Tag URIs in all examples.
+NOTE: This standard is currently agnostic regarding the URI scheme used for an agent. Options for standardizing further might include the registration of a specific URN namespace identifier, for example, 'urn:openFloor' [5]. In the short term Tag URIs [6] represent a pragmatic way to generate a unique identifier for an agent.  In this document we use Tag URIs in all examples.
 
 ### 1 SPECIFICATION
 
@@ -342,7 +342,7 @@ It is the responsibility of the floor manager (or the agent playing the role of 
                       "department": "Passport Office",
                       "role": "Immigration Specialist",
                       "synopsis": "Immigration specialist as part of the Beurocrat system.",
-                      "openFloorRoles": {"convener":True}
+                      "openFloorRoles": {"convener": true}
                   }
               },
               {      
@@ -556,7 +556,7 @@ Then dialogEvent can contain multiple feature objects but it must contain a `tex
 Figure 11 shows the structure of an event with the _eventType_ of _utterance_.
 This object contains just one mandatory parameter with the key-name _dialogEvent_.
 The _to_ parameter is optional and by default utterance events are public and addressed to all conversants. 
-They can however be addressed to specific conversants and/or made private using the private fflag in the _to_ element of the event.
+They can however be addressed to specific conversants and/or made private using the private flag in the _to_ element of the event.
 A private utterance event is also termed a 'whisper'.  These can be used to convey instructions and contextual information behind the scenes between conversants.
 
 The _dialogEvent_ element must contain a valid dialog event object as specified in [[2] Interoperable Dialog Event Object Specification Version 1.0.2](https://github.com/open-voice-interoperability/docs/blob/main/specifications/DialogEvents/1.0.2/InteropDialogEventSpecs.md)
@@ -595,7 +595,7 @@ The _audio_ feature can be used in dialog events to transmit audio content.
 |-|-|
 |_mimeType_(s)|audio/mpeg</br>audio/mp4</br>audio/aac</br>audio/ogg</br>audio/opus</br>audio/webm</br>audio/wav</br>audio/flac</br>audio/x-flac</br>|
 |_speakerUri_|As above|
-|_value_|Inline audio content should be represented as base64 encoding and match the mime type specified.  If more than one token value is supplied then all values must be in the same mime type and will be interpreted as sequential audio in the order presented.|
+|_value_|Inline audio content should be represented as base64 encoding and match the mime type specified. If more than one token value is supplied then all values must be in the same mime type and will be interpreted as sequential audio in the order presented.|
 |_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.  They are ordered in the order that the audio should be presented|
 
 ##### 1.10.4 dialogEvent `ssml` Feature
@@ -607,7 +607,7 @@ The _ssml_ feature can be used in dialog events to include SSML [[8] Speech Synt
 |_mimeType_|application/ssml+xml |
 |_speakerUri_|As above|
 |_value_|Any number of _value_(s) are permitted in the _tokens_ section. Each _value_ should be a _<speak>_ element wrapping valid SSML as per |
-|_valueUrl_|s)|audio/mpeg</br>audio/mp4</br>audio/aac</br>audio/ogg</br>audio/opus</br>audio/webm</br>audio/wav</br>audio/flac</br>audio/x-flac</br>|
+|_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded. They are ordered in the order that the audio should be presented|
 |_speakerUri_|As above|
 |_value_|Any number of _value_ strings can be contained in the _tokens_ section. Each _value_ string should be a valid SSML `<speak>` element.|
 |_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.  They are ordered in the order that the audio should be presented|
@@ -641,7 +641,7 @@ There are no limitations on the features that are added to a dialog event.  This
 
 #### Figure 13. Example video feature, which at present would be considered a custom feature.
 
-### 1.12 Invite Event
+#### 1.12 invite Event
 
     {
       "openFloor": {
@@ -844,7 +844,7 @@ The following special _reason_ tokens have particular meaning in this event.
 |@refused|The agent is declining the invite because it is not willing to handle this request|
 |@error|The agent is declining the floor because it has encountered an error from which it cannot recover|
 
-### 1.16 Bye Event
+#### 1.16 bye Event
 
     {
       "openFloor": {
@@ -916,7 +916,7 @@ The _getManifests_ event can be used to ask an assistant about the services it p
 2. Asking a site or assistant (or human agent) if they are willing and able to support a specific task.
 3. Asking a site or assistant (or human agent) to recommend one or more assistants that can help with a certain task.
 
-A _publishManifests_ event will be returned in response to the _getManifests_ event as defined in section 1.18.  This will contain one or more manifests [4] each defining the location, identity, and services provided by a specific assistant.   The returned manifests will be classified as either _servicingManifests_ or _discoveryManifests_ depending on whether these agents are primarily servicing assistants or discovery assistants.
+A _publishManifests_ event will be returned in response to the _getManifests_ event as defined in section 1.18. This will contain one or more manifests [4] each defining the location, identity, and services provided by a specific assistant.   The returned manifests will be classified as either _servicingManifests_ or _discoveryManifests_ depending on whether these agents are primarily servicing assistants or discovery assistants.
 
 The _getManifests_ event has the following optional parameters:
 
@@ -1240,9 +1240,9 @@ The optional _reason_ section can be used to convey the reason for the floor req
 
 Figure 27. A bare grantFloor event
 
-The _grantFloor_ event is used to grant the conversational floor to agents.   This event is not needed in conversations between a single user and an agent or in situations where agents are responsive only to utterance events directed to them specifically.   This event has been added to support mutli-agent mixed-initiative conversations where a convener agent is present to co-ordinate the floor [7].
+The _grantFloor_ event is used to grant the conversational floor to agents.   This event is not needed in conversations between a single user and an agent or in situations where agents are responsive only to utterance events directed to them specifically.   This event has been added to support multi-agent mixed-initiative conversations where a convener agent is present to co-ordinate the floor [7].
 
-In one use case, the _grantFloor_ event can be sent by floor managers in resonse to a _requestFloor_ event from an agent. Figure 27 shows a bare _grantFloor_ envelope which might be used for this purpose.  Once this message is received by an agent it is free to send Utterance events to the floor with the expectation that they will be delivered to the designated destination.
+In one use case, the _grantFloor_ event can be sent by floor managers in response to a _requestFloor_ event from an agent. Figure 27 shows a bare _grantFloor_ envelope which might be used for this purpose.  Once this message is received by an agent it is free to send Utterance events to the floor with the expectation that they will be delivered to the designated destination.
 
     {
       "openFloor": {
@@ -1423,7 +1423,7 @@ The floor manager retains ultimate responsibility for:
 - Deciding which conversants are currently considered to have floor rights in the conversation.  
 - Deciding which conversants are currently 'in' the conversation.
 
-The floor manager should exhibit predictable autonomic behavoir when  If intelligent decisions are required then the floor manager will delegate these to a convener agent of its choosing.
+The floor manager should exhibit predictable autonomic behavior. If intelligent decisions are required then the floor manager will delegate these to a convener agent of its choosing.
 
 Open-Floor compliant conversation floor managers (including host browsers) agents must support all normative event types in order to be considered fully compliant.
 
@@ -1459,13 +1459,13 @@ The floor manager must curate the converation section of the envelope as follows
 |_acceptInvite_|Pass-Through||
 |_bye_|Pass-Through||
 |_getManifests_|Pass-Through||
-|_publishManifests_|Pass-Through|
+|_publishManifests_|Pass-Through||
 |_requestFloor_|Delegate to Convener|Send _grantFloor_|
 |_grantFloor_|Delegate to Convener|Pass-Through|
 |_yieldFloor_|Pass-through||
 |_revokeFloor_|Delegate to Convener|Pass-Through|
 
-Floor Manager Action on Recveipt of Events
+Floor Manager Action on Receipt of Events
 
 For each event, the floor  manager will either pass the event through to the conversants or it will delegate the event to the convener agent.  The table above shows how each event should be treated.
 
@@ -1482,7 +1482,7 @@ The floor manager will process envelopes in the order that they are received and
 The floor manager should process each envelope in the order received as a separate thread taking each event in the envelope in the order declared.  
   - For each event use the Table above to decide if the event can be passed-through or needs to be delegated to the convener.
   - If an event needs to be delegated to the convener then send it in its own envelope to the convener and await a response
-  - Insert any events returned from the convener at the head of the event list in the order they are returned and continue processing. the event list.
+  - Insert any events returned from the convener at the head of the event list in the order they are returned and continue processing the event list.
 
 #### 2.3 Ignoring events with protocols that require a response
 
@@ -1556,7 +1556,7 @@ This section documents some of the key design decisions that were made by the te
 |speakerUri uniqueness|_Question_:Who allocates unique SpeakerIDs?  Is it the 'floor' (or client) or the agent server?<br>_Answer_: Agents should have a universal unique SpeakerId.  This will be stored in the manifest.  To guarantee uniqueness we renamed this _speakerUri_.  See the section on agent identity in the document.|
 |private flag in _to_|_Question:_ Should the private flag be inside the _to_ section because it has no meaning if there is no _to_section.<br>_Answer:_ Yes|
 |speakerUris in invites|_Question:_Should we allow/expect speakerUris in invites? <br>_Answer:_ These are optionally allowed. If present it will mean that the inviting agent has either received the manifest or has spoken with the agent previously. The receiving agent can ignore this parameter, especially if it not valid.|
-|speakerUri in _from_|_Question:_ Do we need a speakerUri on the _from_ parameter as well?<br>_Answer:_Yes and it is now mandatory.|
+|speakerUri in sender|_Question:_ Do we need a speakerUri in the sender parameter as well?<br>_Answer:_Yes and it is now mandatory.|
 |keeping _dialogHistory_ safe|_Question_: To what extent is it safe to put dialog history into invites and findAssistant messages?<br>_Answer_: This is left to the discretion of the sender by creating a separate _context_ event type under the control of the sender.  This is similar to a warm transfer in a real telephone conversation. The consensus was that it is probably safe to pass on the last few turns as-if the target agent had been at the table. i.e. obscure any messages that this agent is not cleared to have visibility of , for example, because they were private.  More discussion will probably be needed on this issue as use cases emerge.|
 |whispers or private utterances|_Question_:Now that _dialogEvent_ parameters are embedded in events such as _invite_ and there is support for the _private_ parameter in the _to_ section of an _utterance_ event, can we retire _whisper_ in favor of private _utterance_ events instead??<br>_Answer:_ Yes. The _whisper_ event has been removed.  The concept remains.|
 |_context_ in dialogEvents|_Question:_ We added -context- into dialog events to support context on utterances. The intention was that this would allow the passing of context in such a way that things like language type and dialect were fully supported. However it is located outside of the 'text' feature so that is not correct.   Would we not be better simply removing _context_ as a specific extension to dialog events and considering adding 'instruct' and 'context' dialogEvent parameters to events like _invite_ rather than the generic _dialogEvent_?   That way we can more directly support the established LLM paradigm of instructions and context in all messages where _dialogEvents_ are used to convey instructions from one agent to another.<br>_Answer:_It was agreed that context would become a separate dialog event with one standard parameter (dialogHistory) and permitting any arbitrary additional keys and data structures.| 
@@ -1569,7 +1569,7 @@ This section documents some of the key design decisions that were made by the te
 |Are manifest accretive?|_Question_:  When reading section 1.15 of the Conversational Envelope I was wondering. Who are the participants that should receive a publishManifests message In case you have a sequence: Agent A - Agent B - Agent C. So A invites B and B invites C. Hence, A may not know about C but only B. How is this to be reflected in the manifest as the capabilities of C will add to those of B?<br>_Answer:_ No we are not anticipating that manifests will be cumulative. The envelope contains a 'conversants' section in the 'conversation' area. For each conversants we keep partial manifests containing the 'identity' information for each agent. Thus any party to the conversation can request full manifest information from any conversant at any time. So if tasks are delegated round-table to other agents then it is clear that the other agent is providing this service and you can use their manifest directly in this case. If an agent is using the services of other agents behind the scenes then this is their private affair. We expect an agent to include in its manifest the range of services that it offers regardless of how it provides this. So if an agent is general purpose and is 'rebadging' the services of other agents then the their manifest should explain that they are a general purpose agent. We are not currently anticipating that manifests will be dynamic in nature depending context. We are expecting that manifests might be updated as capabilities change.|
 |Declining invites|_Question_:Section 1.13 of the Conversational Envelope specification describes the invite event. Can an invite be rejected? If yes, how can this be done? I remember a busy-out method in the times of IVRs. The purpose was to complete ongoing calls and not to accept new calls, e.g., if the system should go down for maintenance. Is there something comparable?<br>_Answer:_ Added a bare event 'declineInvite'|
 
-### 7 Document Change Log
+## 7 Document Change Log
 
 |Version|Release Date|Description|
 |-|-|-|
@@ -1579,4 +1579,4 @@ This section documents some of the key design decisions that were made by the te
 |0.9.3|2024.11.26|- Added private to event objects</br>- Added context parameter to whisper</br>|
 |0.9.4|2025.05.13|- Changed speakerId to be speakerUri <br>- Make "to" a dictionary containing "serviceUrl" and "speakerUri" in all events</br> - Added section on identity and speakerUri</br>- Add 'floorYield" to mirror "floorRevoke"<br> - Added conversants section<br>- Added the requirement for speakerUri to be unique and persistent for each agent<br>- Removed the need for url to uniquely identify an agent<br>- Refactored requestManifest into a unified findAgent<br>- Added recommendScope to findAgent<br>- Changed publishManifests to return full array of manifests not just the synopsis<br>- Move private into 'to' of the event<br>- Added 'speakerUri' into the 'sender'<br>- Rename serviceEndpoint to serviceUrl and also rename 'url' as 'serviceUrl' in sender and to objects.<br> - Add optional "dialogHistory" section to _Invite_ and _getManifests_ events.<br>- Limit conversants to identification section only.<br>- Move persistent state into the conversant section<br>- Added section on multi-party conversations.<br>- Added description for _requestFloor_ and make it informative not normative.<br>- Added description for _grantFloor_ and make it informative not normative.<br> - Added a description for _revokeFloor_ and normative reason labels <br>- Change the score on _proposeAgent_ to be between 0 and 1.  <br>- uninvite : add description for the uninvite. <br>- Add categories for the _uninvite_ reason.<br> - remove _whisper_ in favor or private _utterance_ and embedded _dialog_events_ </br>- created a top-level context event containing a dialogHistory parameter and leaving it open for other random data to be in there. </br>- removed dialogEvent from all sub-events apart from dialogHistory and utterance </br> - re-instated getManifests, publishManifests, describeAssistant (and publishManifests)</br>- retired context in dialogEvent</br>- make it clear in the spec that utterances can be private or not and that private utterances are whispers. </br>- retire requestManifest  </br>- renamed findAssistant to be getManifests. return publishManifests.</br>- made recommendScope default to internal </br>- made -servicingManifests and discoveryManifests optional in publishManifests. </br>- made reason an optional key in all events</br>- defined special reserved key words in the _reason_ key.</br>- specified which reserved _reason_ keywords applied in which events.- Introduced a separate bare event 'declineInvite' </br> - renamed the spec as Open-floor Inter-Agent Message Specification with the key: "openFloor"|
 |1.0.0|2-25.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
-|1.0.1|DRAFT|- Added assignedFloorRoles</br>- Added floorGranted section to conversation object</br>- Added convener to assignedFloorRoles</br>- Added acceptInvite</br>- Moved dialogHistory into Invite event</br>- Removed Context event</br>- Expanded the multi-party conversation section including Convener and Floor Management sections. </br>- Removed persistentState from conversants</br>- Clarified the role of the floor manager in section 0.4.3</br>- Completed the floor management minimal behaviour including: </br>- Ignoring the privacy flag for all events apart from utterance.   </br>- Simplify the table to a simple delegate/pass-through </br>- Define how requestFloor is translated into grantFloor/revokeFloor. </br>- Specify the processing order of events</br>|
+|1.0.1|DRAFT|- Added assignedFloorRoles</br>- Added floorGranted section to conversation object</br>- Added convener to assignedFloorRoles</br>- Added acceptInvite</br>- Moved dialogHistory into Invite event</br>- Removed Context event</br>- Expanded the multi-party conversation section including Convener and Floor Management sections.</br>- Removed persistentState from conversants</br>- Clarified the role of the floor manager in section 0.4.3</br>- Completed the floor management minimal behaviour including:</br>&nbsp;&nbsp;- Ignoring the privacy flag for all events apart from utterance.</br>&nbsp;&nbsp;- Simplify the table to a simple delegate/pass-through</br>&nbsp;&nbsp;- Define how requestFloor is translated into grantFloor/revokeFloor.</br>&nbsp;&nbsp;- Specify the processing order of events|
