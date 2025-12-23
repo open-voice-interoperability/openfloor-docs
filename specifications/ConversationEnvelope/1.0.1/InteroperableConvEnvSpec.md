@@ -30,8 +30,8 @@
   - [1.8 Events Object](#18-Events-Object)
   - [1.9 Event-Types](#19-Event-Types)
   - [1.10 Utterance Events](#110-Utterance-Events)
-  - [1.10.1 Utterance Text Feature](#1101-dialogEvent-Text-Feature)
-  - [1.11 Extensible Dialog Event Features (Informative)](#111-Extensible-Dialog-Event-Features-Informative)
+  - [1.10.1 dialogEvent Text Feature](#1101-dialogEvent-Text-Feature)
+  - [1.11 Extensible Dialog Event Features](#111-Extensible-Dialog-Event-Features)
   - [1.12 invite Event](#112-invite-Event)
   - [1.13 uninvite Event](#113-uninvite-Event)
   - [1.14 acceptInvite Event](#114-acceptInvite-Event)
@@ -39,19 +39,19 @@
   - [1.16 bye Event](#116-bye-Event)
   - [1.17 getManifests Event](#117-getManifests-Event)
   - [1.18 publishManifests Event](#118-publishManifests-Event)
-  - [1.19 requestFloor Event](#119-requestFloor-Event-INFORMATIVE)
-  - [1.20 grantFloor Event](#120-grantFloor-Event-INFORMATIVE)
+  - [1.19 requestFloor Event](#119-requestFloor-Event)
+  - [1.20 grantFloor Event](#120-grantFloor-Event)
   - [1.21 revokeFloor Event](#121-revokeFloor-Event)
   - [1.22 yieldFloor Event](#122-yieldFloor-Event)
-- [2 MINIMAL BEHAVIORS](#2-MINIMAL-BEHAVIORS)
-  - [2.1 Minimal Assistant Behavior](#21-Minimal-Servicing-Assistant-Behaviors-on-Receipt-of-Events-INFORMATIVE)
-  - [2.2 Minimal Conversation Floor Manager Behaviors](#22-Minimal-Conversation-Floor-Manager-Behaviors-on-Receipt-of-Events-INFORMATIVE)
-  - [2.3 Ignoring events with protocols such as HTTP POST](#23-Ignoring-events-with-protocols-that-require-a-response)
-- [3 JSON Envelope SCHEMA](#3-JSON-Envelope-SCHEMA)
-- [4 REFERENCES](#4-REFERENCES)
-- [5 GLOSSARY OF TERMS](#5-GLOSSARY-OF-TERMS)
-- [6 DECISION LOG](#6-DECISION-LOG)
-- [7 DOCUMENT CHANGE LOG](#7-DOCUMENT-CHANGE-LOG)
+- [2 Minimal Behaviors](#2-Minimal-Behaviors)
+  - [2.1 Minimal Servicing Assistant Behaviors (on Receipt of Events)](#21-Minimal-Servicing-Assistant-Behaviors-on-Receipt-of-Events)
+  - [2.2 Minimal Conversation Floor Manager Behaviors (on Receipt of Events)](#22-Minimal-Conversation-Floor-Manager-Behaviors-on-Receipt-of-Events)
+  - [2.3 Ignoring events with protocols that require a response](#23-Ignoring-events-with-protocols-that-require-a-response)
+- [3 JSON Envelope Schema](#3-JSON-Envelope-Schema)
+- [4 References](#4-References)
+- [5 Glossary of Terms](#5-Glossary-of-Terms)
+- [6 Decision Log](#6-Decision-Log)
+- [7 Document Change Log](#7-Document-Change-Log)
 
 *****
 ### 0 SCOPE AND INTRODUCTION
@@ -613,7 +613,7 @@ The _ssml_ feature can be used in dialog events to include SSML [[8] Speech Synt
 |_valueUrl_|Any number of value URLs are allowed in the tokens section. These URLs should locate content of mime-type given when downloaded.  They are ordered in the order that the audio should be presented|
 
 
-### 1.11 Extensible Dialog Event Features (informative)
+### 1.11 Extensible Dialog Event Features
 
 The features in Dialog Events are intentionally intended to be extensible.  This specification does not limit the features that can be put into dialog events.
 
@@ -1179,7 +1179,7 @@ Note that there is no requirement in the Open-Floor framework for an assistant t
 
 The recommending agent is free to use any mechanism it wants to generate the _score_.
 
-### 1.19 requestFloor Event [INFORMATIVE]
+### 1.19 requestFloor Event
 
     {
       "openFloor": {
@@ -1206,15 +1206,15 @@ The recommending agent is free to use any mechanism it wants to generate the _sc
 
 ##### Figure 26. A typical requestFloor event
 
+This event was added to support multi-agent mixed-initiative conversations, for example where a convener agent is present to co-ordinate the floor [7].
+
 The _requestFloor_ event is used by agents that do not currently have the conversational floor to request it.  Figure 26 shows a typical _requestFloor_ envelope.
 
-This event is not needed in conversations between a single user and an agent or in situations where agents are responsive only to utterance events directed to them specifically.   This event has been added to support multi-agent mixed-initiative conversations where a convener agent it present to co-ordinate the floor  [7].
-
-This event is somewhat experimental and is currently informative not normative and may be subject to change.  Compliant agents do not need to support this event yet and servicing agents may send this event but they are not expected to receive it and can safely ignore it if they do (See section 2.1). 
+By default agents are given floor rights when they join a conversation.  If floor rights have been revoked for any reason, they can be requested using the _requestFloor_ event.  The _requestFloor_ event should receive a _grantFloor_ or _revokeFloor_ event in response form the floor manager (or via delegation from the convener).
 
 The optional _reason_ section can be used to convey the reason for the floor request.  This can be used to help with the decision whether to grant the floor or not.  No special reason tokens are defined yet for this event.
 
-### 1.20 grantFloor Event [INFORMATIVE]
+### 1.20 grantFloor Event
 
     {
       "openFloor": {
@@ -1240,7 +1240,9 @@ The optional _reason_ section can be used to convey the reason for the floor req
 
 Figure 27. A bare grantFloor event
 
-The _grantFloor_ event is used to grant the conversational floor to agents.   This event is not needed in conversations between a single user and an agent or in situations where agents are responsive only to utterance events directed to them specifically.   This event has been added to support multi-agent mixed-initiative conversations where a convener agent is present to co-ordinate the floor [7].
+This event was added to support multi-agent mixed-initiative conversations, for example where a convener agent is present to co-ordinate the floor [7].
+
+The _grantFloor_ event is used to grant the conversational floor to agents.    
 
 In one use case, the _grantFloor_ event can be sent by floor managers in response to a _requestFloor_ event from an agent. Figure 27 shows a bare _grantFloor_ envelope which might be used for this purpose.  Once this message is received by an agent it is free to send Utterance events to the floor with the expectation that they will be delivered to the designated destination.
 
@@ -1290,13 +1292,11 @@ In one use case, the _grantFloor_ event can be sent by floor managers in respons
 
 #### Figure 28. A grantFloor event inviting an agent to service a specific request.
 
-Figure 28 shows an alternate use-case for the _grantFloor_ event. In this use case an agent is already present in a multi-party conversation. It does not currently have the floor and has not requested it.  It is an observer in the conversation.  The convener, floor manager or another agent can direct a _grantFloor_ event to an agent with a _dialogEvent_ to invite the agent to take the floor and describing the purpose of the request.  This is very similar in structure and purpose to an _invite_ event but is sent to an agent that is already party to the conversation.
+Figure 28 shows an alternate use-case for the _grantFloor_ event. In this use case an agent is already present in a multi-party conversation. It does not currently have floor rights and has not requested it.  It is an observer in the conversation.  The convener, floor manager or another agent can direct a _grantFloor_ event to an agent with a private _utterance_ event to describing the purpose of the request.  This is very similar in structure and purpose to an _invite_ event but is sent to an agent that is already party to the conversation.
 
 The optional _reason_ section can be used to convey the reason for the floor request.  No special reason tokens are defined yet for this event.   
 
 The accompanying private _utterance_ event  explains in natural language and supporting media to the recipient describing what is requested of them.   This might be a user utterance or an instruction generated by another agent or the floor manager.   
-
-This event is somewhat experimental and is currently informative not normative and may be subject to change.  Compliant agents do not need to support this event yet but naïve implementations can treat this event as they would an _invite_ event. (See section 2.1)
 
 ### 1.21 revokeFloor Event
 
@@ -1325,7 +1325,7 @@ This event is somewhat experimental and is currently informative not normative a
 
 ##### Figure 29. A typical revokeFloor event
 
-The _revokeFloor_ event informs an agent that they no longer have the conversational floor.  Typically the agent will cease to send _utterance_ events on receipt of this event.
+The _revokeFloor_ event informs an agent that they no longer have conversational floor rights.  A well-behaved agent should cease to send _utterance_ events on receipt of this event.  If the agent wants the floor after this, they should send a _requestFloor_ event.
 
 Figure 29 shows a typical _revokeFloor_ event which shows an agent having the floor revoked because a higher precedence request has been made that needs to be serviced by a different agent.
 
@@ -1363,7 +1363,7 @@ The optional _reason_ key can be used to convey the reason that the floor has be
 
 ##### Figure 30. A typical yieldFloor event
 
-The _yieldFloor_ event is sent by an agent to indicate that they no longer intend to send _utterance_ events to any conversants.  This event is useful for several use cases. The optional _reason_ parameter can be used to convey the reason that the floor has been yielded.
+The _yieldFloor_ event is sent by an agent to indicate that they no longer consider themself to have floor rights.  This means that the agent will cease to send _utterance_ events to any conversants until it is invited to the floor again.  The optional _reason_ parameter can be used to convey the reason that the floor has been yielded.
 
 Figure 30 shows a typical _yieldFloor_ event indicating that the agent believes that they have completed the current goal that they are working on supporting and are not expecting to contribute any more utterances unless requested.
 
@@ -1377,10 +1377,9 @@ The following special _reason_ tokens are supported by this event type:
 |@refused|The agent is yielding the floor because it is not willing to handle this request|
 |@error|The agent is yielding the floor because it has encountered an error from which it cannot recover|
 
-
 ## 2 Minimal Behaviors
 
-#### 2.1 Minimal Servicing Assistant Behaviors (on Receipt of Events) [INFORMATIVE]
+#### 2.1 Minimal Servicing Assistant Behaviors (on Receipt of Events)
 
 Open-Floor compliant dialog assistants must support all event types in order to be considered fully compliant.  This section documents the minimal behavior expected from an Open-Floor compliant dialog assistant. These guidelines are informative not normative.
 
