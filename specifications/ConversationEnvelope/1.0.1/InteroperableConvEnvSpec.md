@@ -116,9 +116,17 @@ The multi-party conversation paradigm can also be used as a framework-free agent
 
 #### 0.4.1 Floor Manager
 
-The floor manager maintains the _conversation_ section of the envelope. Using simple deterministic rules, the floor manager decides which agents should receive which events. In general, all events are sent to all conversants to decide which events to respond to (or not). There are some special cases for certain events, particularly regarding the _private_ flag. See the section on [Minimal Behaviours for a Floor Manager](#minimal-behaviours-for-a-floor-manager) for more details.
+Any component or agent that has created a conversation and invited conversants to it is acting as the 'floor' for the users or agents in that conversation.   For example all three of the folloiwng will act as a floor manager:
 
-The floor manager is expected to exhibit predictable, autonomic behaviour that is standardized. All descretionary actions will be delegated to the convener.
+- An open-floor compliant host browser acting as the media interface with a user and inviting agents to that conversation under the control of the user.  
+- A floor-manager component that hosts multi-party conversation with many conversants invited to the floor at once.
+- An agent that channels or mediates communication through to another agent.
+
+The floor manager maintains the _conversation_ section of the envelope. Using simple deterministic rules, the floor manager decides which agents should receive which events. In general, all events are sent to all conversants to decide which events to respond to (or not). There are some special cases for certain events, particularly regarding the _private_ flag. 
+
+The floor manager should exhibit predictable, autonomic behaviour that is standardized. All descretionary actions such as handling invitations or floor requests can be delegated by the floor manager to a designated convener agent.    In general autonomic floor behaviour will be sufficient for conversations with a single user and a single agent at any time.  Multi-party conversations will likely be unsable without a convenere unless all of the participants are extremely disciplined in their behaviours.
+
+See the section on [Minimal Behaviours for a Floor Manager](#minimal-behaviours-for-a-floor-manager) for more details.
 
 #### 0.4.2 Convener
 
@@ -1407,47 +1415,74 @@ If the _to_ section is addressed to the agent (or is absent) then the following 
   * _revokeFloor_ - If this is addressed to you, cease sending events and wait for either a _grantFloor_ or an _utterance_ directed specifically to you as an agent before sending any more events.  
   * _yieldFloor_ - Ignore this.
 
-#### 2.2 Minimal Conversation Floor Manager Behaviors (on Receipt of Events) [INFORMATIVE]
+#### 2.2 Minimal Conversation Floor Manager Behaviors (on Receipt of Events)
 
-The conversation floor manager retains ultimate responsibility for deciding which conversants are currently considered to be active in the conversation and which agent is the current focal agent.  This can, for example, include removing agents from the conversation if they do not respond within an allotted time, inviting trusted agents to the conversation when needed, and deciding when to terminate a conversation with the user.  
+The floor manager retains ultimate responsibility for:
+
+- Responding to events and forwarding them to conversants. 
+- Deciding which conversants are currently considered to have floor rights in the conversation.  
+- Deciding which conversants are currently 'in' the conversation.
+
+The floor manager should exhibit predictable autonomic behavoir when  If intelligent decisions are required then the floor manager will delegate these to a convener agent of its choosing.
 
 Open-Floor compliant conversation floor managers (including host browsers) agents must support all normative event types in order to be considered fully compliant.
 
-A simple floor manager will process envelopes in the order that they are received and events in the order listed in the envelope.  
+##### Curating the conversation section of envelopes
 
-Step 1. Separate events with different _to_ addresses into different envelopes. Process these envelopes in the order that the _to_ recipients appear in the envelope events list. Treat events without a _to_ as if it was addressed to all converants in the conversation as a group and treat this group as a recipient for the purposes of this step.
+The floor manager must curate the converation section of the envelope as follows:
 
-Step 2. The floor manager can add its own events to the envelope if required. This enables the floor to make explicit any implicit events that may have been omitted by the client. For example if an _utterance_ is addressed to a recipient who is not currently a conversant then the floor manager will add an _invite_ to the head of the envelope.
+- _conversant_ section
+  - When the floor manager sends an invite to the intented conversant it will immediately add the conversant to the conversant list. 
+  - The conversant will remain on the conversant list until either:
+      - _declineInvite_ is received from that conversant.
+      - _bye_ is received from that conversant.
+      - _uninvite_ is sent to that conversant.
 
-Step 3. Process each envelope as a separate thread taking each event in the envelope in the order declared.  Some events will require the floor to wait for responses before proceeding to the next event.
+- _floorGranted_ section
+  - By default, conversants are in a _floorGranted_ state as soon as they are added to the _conversant_ section.
+  - conversants remain in this state until either:
+    - A _yieldFloor_ is received from that conversant
+    - A _revokeFloor_ is sent to that conversant
+    - The conversant is removed from the conversants list (as they will no longer be part of the conversation)
+  - If conversants are not in the floor granted state then they can be reinstated when:
+    - A _grantFloor_ is sent to the conversant
+  - For clarity the _requestFloor_ does not directly change the state of _floorGranted_
 
-In the table below 'forward to INTENDED'  means the following:
-  - If _private_ is true:  
-    - if the _to_ is defined then add to envelope intended for the intended target only.
-    - If _to_ is not defined then ignore this event.
- 
-  - If not:
-    - Add the event to an envelope for all participants apart from the sender.
-    - Maintain any _to_ details in those envelopes if specified.
+##### Delegating Events To Convener
 
-In the table below 'forward to convener' means that the event is forwarded to the convener and a response it waited for before executing any other events in the envelope.
+|event|type|if no convener|
+|-|-|-|
+|_utterance_|Pass-Through (floorGranted=True)<br>Delegate (floorGranted=False)|Ignore|
+|_invite_|Delegate to Convener|Pass-Through|
+|_uninvite_|Delegate to Convener|Pass-Through|
+|_declineInvite_|Pass-Through||
+|_acceptInvite_|Pass-Through||
+|_bye_|Pass-Through||
+|_getManifests_|Pass-Through||
+|_publishManifests_|Pass-Through|
+|_requestFloor_|Delegate to Convener|Send _grantFloor_|
+|_grantFloor_|Delegate to Convener|Pass-Through|
+|_yieldFloor_|Pass-through||
+|_revokeFloor_|Delegate to Convener|Pass-Through|
 
-A minimal floor manager will therefore exhibit the following behaviours.   
+Floor Manager Action on Recveipt of Events
 
-|event|type|source=not-convener|source=convener|minimal convener|
-|-|-|-|-|-|
-|_utterance_|Pass-Through|forward to INTENDED|forward to INTENDED|Authorize|
-|_invite_|Delegate to Convener|forward to CONVENER|forward to INTENDED|Authorize|
-|_uninvite_|Delegate to Convener|forward to CONVENER|forward to INTENDED|Ignore|
-|_declineInvite_|Pass-Through|forward to ALL|forward to ALL||
-|_acceptInvite_|Pass-Through|forward to ALL|forward to ALL||
-|_bye_|Pass-Through|forward to ALL|forward to ALL||
-|_getManifests_|Pass-Through|forward to INTENDED|forward to INTENDED||
-|_publishManifests_|Pass-Through|forward to INTENDED|forward to INTENDED||
-|_requestFloor_|Delegate to Convener|forward to CONVENER|send a _grantFloor_ to INTENDED|Authorize|
-|_grantFloor_|Delegate to Convener|forward to CONVENER|forward to INTENDED||
-|_yieldFloor_|Pass-through|forward to INTENDED|forward to INTENDED||
-|_revokeFloor_|Delegate to Convener|forward to CONVENER|forward to INTENDED|Authorize|
+For each event, the floor  manager will either pass the event through to the conversants or it will delegate the event to the convener agent.  The table above shows how each event should be treated.
+
+In the table:
+- **Pass-Through** means that the event will be sent to ALL conversants.  For utterance events the _private_ flag will cause the event to be passed to only the intended recipient.  For all other event types the _private_ flag will be ignored.     
+- **Delegate to Convener** means that the event is forwarded to the convener and the convener is then responsible for returning this event back to the floor manager OR substituting it with different events.
+
+##### Processing Envelopes and Events in Sequence [NORMATIVE]
+
+Floor managers may be processing more than one envelope at a time and envelopes can contain multiple events.
+
+The floor manager will process envelopes in the order that they are received and events in the order listed in the envelope.  
+
+The floor manager should process each envelope in the order received as a separate thread taking each event in the envelope in the order declared.  
+  - For each event use the Table above to decide if the event can be passed-through or needs to be delegated to the convener.
+  - If an event needs to be delegated to the convener then send it in its own envelope to the convener and await a response
+  - Insert any events returned from the convener at the head of the event list in the order they are returned and continue processing. the event list.
 
 #### 2.3 Ignoring events with protocols that require a response
 
@@ -1544,19 +1579,4 @@ This section documents some of the key design decisions that were made by the te
 |0.9.3|2024.11.26|- Added private to event objects</br>- Added context parameter to whisper</br>|
 |0.9.4|2025.05.13|- Changed speakerId to be speakerUri <br>- Make "to" a dictionary containing "serviceUrl" and "speakerUri" in all events</br> - Added section on identity and speakerUri</br>- Add 'floorYield" to mirror "floorRevoke"<br> - Added conversants section<br>- Added the requirement for speakerUri to be unique and persistent for each agent<br>- Removed the need for url to uniquely identify an agent<br>- Refactored requestManifest into a unified findAgent<br>- Added recommendScope to findAgent<br>- Changed publishManifests to return full array of manifests not just the synopsis<br>- Move private into 'to' of the event<br>- Added 'speakerUri' into the 'sender'<br>- Rename serviceEndpoint to serviceUrl and also rename 'url' as 'serviceUrl' in sender and to objects.<br> - Add optional "dialogHistory" section to _Invite_ and _getManifests_ events.<br>- Limit conversants to identification section only.<br>- Move persistent state into the conversant section<br>- Added section on multi-party conversations.<br>- Added description for _requestFloor_ and make it informative not normative.<br>- Added description for _grantFloor_ and make it informative not normative.<br> - Added a description for _revokeFloor_ and normative reason labels <br>- Change the score on _proposeAgent_ to be between 0 and 1.  <br>- uninvite : add description for the uninvite. <br>- Add categories for the _uninvite_ reason.<br> - remove _whisper_ in favor or private _utterance_ and embedded _dialog_events_ </br>- created a top-level context event containing a dialogHistory parameter and leaving it open for other random data to be in there. </br>- removed dialogEvent from all sub-events apart from dialogHistory and utterance </br> - re-instated getManifests, publishManifests, describeAssistant (and publishManifests)</br>- retired context in dialogEvent</br>- make it clear in the spec that utterances can be private or not and that private utterances are whispers. </br>- retire requestManifest  </br>- renamed findAssistant to be getManifests. return publishManifests.</br>- made recommendScope default to internal </br>- made -servicingManifests and discoveryManifests optional in publishManifests. </br>- made reason an optional key in all events</br>- defined special reserved key words in the _reason_ key.</br>- specified which reserved _reason_ keywords applied in which events.- Introduced a separate bare event 'declineInvite' </br> - renamed the spec as Open-floor Inter-Agent Message Specification with the key: "openFloor"|
 |1.0.0|2-25.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
-|1.0.1||
-- Added assignedFloorRoles</br>
-- Added floorGranted section to conversation object</br>
-- Added convener to assignedFloorRoles
-- Added acceptInvite</br>
-- Moved dialogHistory into Invite event</br>
-- Removed Context event</br>
-- Expanded the multi-party conversation section including Convener and Floor Management sections. </br>
-- Removed persistentState from conversants</br>
-
-TO DO
-- (put this in default floor behaviour.) An invite will add a conversant to the conversant list.   They will be removed again on declineInvite or Bye, uninvite. Events will not be forwareded by the floor manager from any agents or users that are not currently considered a conversant.  
-- Make the privacy flag irrelevant for all events apart from utterance.  (allow it but ignore it.)
-
--Finish table for floor manager.   with delegate/dont delegate to convenere PLUS state changing actions such as adding or removing from conversants, adding or removing from hasFloor, and transmuting requestFloor into grantFloor/revokeFloor.  ISSUE does the convener authorize a request floor or do they actually change the message.
-||  
+|1.0.1|DRAFT|- Added assignedFloorRoles</br>- Added floorGranted section to conversation object</br>- Added convener to assignedFloorRoles</br>- Added acceptInvite</br>- Moved dialogHistory into Invite event</br>- Removed Context event</br>- Expanded the multi-party conversation section including Convener and Floor Management sections. </br>- Removed persistentState from conversants</br>- Clarified the role of the floor manager in section 0.4.3</br>- Completed the floor management minimal behaviour including: </br>- Ignoring the privacy flag for all events apart from utterance.   </br>- Simplify the table to a simple delegate/pass-through </br>- Define how requestFloor is translated into grantFloor/revokeFloor. </br>- Specify the processing order of events</br>|
