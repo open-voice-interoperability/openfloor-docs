@@ -106,13 +106,13 @@ The patterns described above allow for conversation between one user and multipl
 <img width="350" alt="Multi-Party Conversations" src="round-table-configuration.png">
 
 \
-**Figure 2.  Multi-party conversations hosted by a floor manager and a converner agent.**\
+**Figure 2.  Multi-party conversations hosted by a floor manager and a convener agent.**\
 \
 This specification also supports the implementation of simultaneous multi-party conversation where multiple users and agents may be listening to the conversation simultaneously and take turns to speak or even speak over one another. Figure 2 shows how this works.  It extends Figure 1 to show multiple agents taking part in a conversations simultaneously.  As in Figure 1, the floor manager manages the conversational interaction.  
 
 A paper describing the evolution of this approach can be found in [7].  Support for multi-party conversations is maturing but is still somewhat experimental. Additional features or small changes may be necessary as the use-cases and patterns mature.
 
-The multi-party conversation paradigm can also be used as a framework-free agentic framework where autonomous AI agents collaborate using a shared floor to achieve a goal.  The Open-Floor approach offers a symetrical peer-to-peer way for agents to collaborate which is in contrast to other asymmetric user/agent models. 
+The multi-party conversation paradigm can also be used as a framework-free agentic framework where autonomous AI agents collaborate using a shared floor to achieve a goal.  The Open-Floor approach offers a symmetrical peer-to-peer way for agents to collaborate which is in contrast to other asymmetric user/agent models. 
 
 #### 0.4.1 Floor Manager
 
@@ -146,7 +146,7 @@ The floor manager also maintains and publishes a list of which conversants curre
 
 The Open-Floor protocol uses floor rights to help manage orderly interactions. By default a conversant has the floor until they either choose to yield the floor or the convener explicitly revokes their floor rights.  The floor manager keeps track of the floor status of each conversant but it does not enforce it.   Agents can send an utterance event whenever they choose and it will be propagated by the floor manager to the relevant conversants.  The floor granting and revoking mechanism in Open-Floor is therefore advisory and intended to facilitate orderly co-operation between well-behaved agents.  
 
-The convener can however enforce agent behaviour.  It has a role to monitor events and if agents are not behaving in ways that are beneficial to the interaction they can be uninvited.   The floor manager will always respect the wishes of the convener regarding which conversants are currently invited or univited to the conversation.
+The convener can however enforce agent behaviour.  It has a role to monitor events and if agents are not behaving in ways that are beneficial to the interaction they can be uninvited.   The floor manager will always respect the wishes of the convener regarding which conversants are currently invited or uninvited to the conversation.
 
 Note that any conversant can request floor rights on behalf of themself or another conversant.  The convener will then moderate whether to accept this request or not.
 
@@ -167,7 +167,7 @@ By combining this discovery mechanism with the delegation and channelling patter
 
 #### 0.6 Agent Identity
 
-Agents and human conversants in a conversation need to be able to identify and recongnize each other during a conversation.  Conversants in this standard are located and identified by two parameters:
+Agents and human conversants in a conversation need to be able to identify and recognize each other during a conversation.  Conversants in this standard are located and identified by two parameters:
 
 - **serviceUrl** - The URL of the server that hosts the agent.  
 - **speakerUri** - A unique string that uniquely identifies the agent in URI syntax. 
@@ -373,7 +373,7 @@ Figure 7 shows other additional elements in the conversation object.
 
 The _conversants_ section is optional if there are two or less conversants in the conversation.   It is mandatory if there are more than two conversants in the current conversation or there is an _assignedFloorRoles_ or _floorGranted_ section in the _conversation_.   It is a good practice to always have a _conversants_ section.   
 
-The _conversant_ section contains a list of all the conversants in the conversation. Each conversant object should contain an _identification_ key. The _identification_ section should be a copy of the _identification_ section of the agent's manifest as defined in [4].   
+The _conversants_ section contains a list of all the conversants in the conversation. Each conversant object should contain an _identification_ key. The _identification_ section should be a copy of the _identification_ section of the agent's manifest as defined in [4].   
 
 ##### 1.6.2 The _assignedFloorRoles_ section
 
@@ -416,12 +416,12 @@ Floor grants are not policed by the floor manager and any conversant can send an
 
 ##### Figure 8. Elements of the _sender_ object. 
 
-Figure 8 shows the elements in the sender object.  _speakerUri_ is mandatory. The _serviceUrl_ is optional. It is good practice to include it if there is no _conversant_ section or the protocol being used to transport the envelopes does not carry source and destination address information.   
+Figure 8 shows the elements in the sender object.  _speakerUri_ is mandatory. The _serviceUrl_ is optional. It is good practice to include it if there is no _conversants_ section or the protocol being used to transport the envelopes does not carry source and destination address information.   
 
 #### 1.8 Events Object
 
     {
-      "openFloor" {
+      "openFloor": {
         ..
         "events": [
           {
@@ -470,7 +470,7 @@ The _private_ parameter is used by the floor manager to decide how to direct _ut
           ...
           
           {
-            "eventType":""revokeFloor",
+            "eventType":"revokeFloor",
             "to": {
               "speakerUri":"tag:agentBeingRevoked,2025:1234"
             },
@@ -767,7 +767,7 @@ The following special tokens have particular meaning in this event.
 |------|-----------|
 |@timedOut|The floor manager or convener is removing the agent from the conversation because it believes that the agent has taken too long to respond.|
 |@brokenPolicy|The floor manager or convener is removing the agent from the conversation because the agent has not met certain policy standards. This may be, for example, due to unsolicited or offensive contributions to the conversation.|
-|@error|The floor manager or convener is removing the agent from the conversation because some kind of error has ocurred which means it is not longer meaningful for the agent to continue being part of the conversation.|
+|@error|The floor manager or convener is removing the agent from the conversation because some kind of error has occurred which means it is no longer meaningful for the agent to continue being part of the conversation.|
 
 ### 1.14 acceptInvite Event
 
@@ -861,7 +861,7 @@ The following special _reason_ tokens have particular meaning in this event.
 
 Figure 20. A minimal _bye_ envelope detaching an agent from a conversation.
 
-When an agent wants to leave the conversation it sends a _bye_ event.  This message indicates that the agent is leaving the dialog.   An example of the _bye_ event is shown in Figure 20. It has no _parameters_.  The optional _to_ object can be included but it is not neccessary.
+When an agent wants to leave the conversation it sends a _bye_ event.  This message indicates that the agent is leaving the dialog.   An example of the _bye_ event is shown in Figure 20. It has no _parameters_.  The optional _to_ object can be included but it is not necessary.
 
     {
       "openFloor": {
@@ -1330,7 +1330,7 @@ The optional _reason_ key can be used to convey the reason that the floor has be
 |@timedOut|The convener is removing the agent's floor rights because the convener believes that the agent has taken too long to respond|
 |@brokenPolicy|The convener is removing the agent's floor rights because the agent has not met certain policy standards|
 |@override|The convener is removing the agent's floor rights because it is granting floor rights to another agent with higher precedence|
-|@error|The convener is removing the agent's floor rights because some kind of error has ocurred which means it is no longer meaningful for the agent to continue interacting.|
+|@error|The convener is removing the agent's floor rights because some kind of error has occurred which means it is no longer meaningful for the agent to continue interacting.|
 
 ### 1.22 yieldFloor Event
 
@@ -1343,8 +1343,8 @@ The optional _reason_ key can be used to convey the reason that the floor has be
           "id": "someUniqueIdForTheConversation"
         },
         "sender": {
-          "speakerUri": "tag:som_agent_that_has_floor.com,2025:1234",
-          "serviceUrl": "https://som_agent_that_has_floor.com"
+          "speakerUri": "tag:some_agent_that_has_floor.com,2025:1234",
+          "serviceUrl": "https://some_agent_that_has_floor.com"
         },
         "events": [
           {
@@ -1397,7 +1397,7 @@ If the _to_ section is addressed to the agent (or is absent) then the following 
         - If the scope is 'external' - ignore this event (if you are a servicing agent and not a discovery agent)
       - if the _to_ section is not specified: 
         - If the scope is 'internal' or 'all'
-          - Consider whether the contents of the envelope is something you want to service.  If you are not sure, ignore this event. Otherwise return a servicingManifests in a _publishManifests_ event containing the relevant manifests of the services you offer that can meet the request.
+          - Consider whether the contents of the envelope is something you want to service.  If you are not sure, ignore this event. Otherwise return servicingManifests in a _publishManifests_ event containing the relevant manifests of the services you offer that can meet the request.
         - if the scope is 'external' - ignore this event.
   * _publishManifests_ - Ignore this event if you did not ask for mandates from another agent.
   * _uninvite_ - Leave this conversation (i.e. stop responding to all events from this conversation_id)
@@ -1422,10 +1422,10 @@ Open-Floor compliant conversation floor managers (including host browsers) agent
 
 ##### Curating the conversation section of envelopes
 
-The floor manager must curate the converation section of the envelope as follows:
+The floor manager must curate the conversation section of the envelope as follows:
 
 - _conversant_ section
-  - When the floor manager sends an invite to the intented conversant it will immediately add the conversant to the conversant list. 
+  - When the floor manager sends an invite to the intended conversant it will immediately add the conversant to the conversant list. 
   - The conversant will remain on the conversant list until either:
       - _declineInvite_ is received from that conversant.
       - _bye_ is received from that conversant.
