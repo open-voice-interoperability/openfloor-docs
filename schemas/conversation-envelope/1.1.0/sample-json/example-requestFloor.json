@@ -1,0 +1,28 @@
+{
+    "openFloor": {
+      "schema": {
+        "version": "1.1.0"
+      },
+      "conversation": {
+        "id": "someUniqueIdForTheConversation",
+        "assignedFloorRoles": {
+          "convener": ["tag:some_Convener.com,2025:1234"]
+        },
+        "floorGranted": [
+          "tag:some_Convener.com,2025:1234"
+        ]
+      },
+      "sender": {
+        "speakerUri": "tag:agentRequestingFloor.com,2025:1234"
+      },
+      "events": [
+        {
+          "eventType": "requestFloor",
+          "to": {
+            "speakerUri": "tag:some_Convener.com,2025:1234"
+          },
+          "reason": "more information to add"
+        }
+      ]
+    }
+  }

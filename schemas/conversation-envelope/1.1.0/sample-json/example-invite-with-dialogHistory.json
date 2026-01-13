@@ -1,0 +1,72 @@
+{
+  "openFloor": {
+    "schema": {
+      "version": "1.1.0"
+    },
+    "conversation": {
+      "id": "31050879662407560061859425913208"
+    },
+    "sender": {
+      "serviceUrl": "https://botsite.botThatOfferedTheInvite.com",
+      "speakerUri": "tag:botThatOfferedTheInvite.com,2025:4567"
+    },
+    "events": [
+      {
+        "eventType": "utterance",
+        "parameters": {
+          "dialogEvent": {
+            "speakerUri": "tag:botThatOfferedTheInvite.com,2025:4567",
+            "span": { "startTime": "2023-06-14T02:06:07Z" },
+            "features": {
+              "text": {
+                "mimeType": "text/plain",
+                "tokens": [ { "value": "I'll pass you over to my-weather." } ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "eventType": "invite",
+        "to": {
+          "serviceUrl": "https://siteof.botThatIsBeingInvited.com",
+          "speakerUri": "tag:botThatIsBeingInvited.com,2025:1234"
+        },
+        "parameters": {
+          "dialogHistory": [
+            {
+              "speakerUri": "tag:theUser.com,2025:3456",
+              "span": { "startTime": "2023-06-14T02:05:00Z" },
+              "features": {
+                "text": {
+                  "mimeType": "text/plain",
+                  "tokens": [ { "value": "Hello" } ]
+                }
+              }
+            },
+            {
+              "speakerUri": "tag:botThatOfferedTheInvite.com,2025:4567",
+              "span": { "startTime": "2023-06-14T02:05:30Z" },
+              "features": {
+                "text": {
+                  "mimeType": "text/plain",
+                  "tokens": [ { "value": "Hello! How can I help you today?" } ]
+                }
+              }
+            },
+            {
+              "speakerUri": "tag:theUser.com,2025:3456",
+              "span": { "startTime": "2023-06-14T02:06:07Z" },
+              "features": {
+                "text": {
+                  "mimeType": "text/plain",
+                  "tokens": [ { "value": "What is the weather in Detroit right now?" } ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

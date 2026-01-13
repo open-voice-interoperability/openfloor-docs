@@ -1,0 +1,45 @@
+{
+    "openFloor": {
+        "schema": {
+            "version": "1.1.0"
+        },
+        "conversation": {
+            "id": "conv:34f6170e-2acf-4535-95ba-86963620aa8d",
+            "assignedFloorRoles": {
+                "convener": ["tag:dev.travelbot,2025:0001"]
+            },
+            "floorGranted": [
+                "tag:userproxy.com,2025:abc123",
+                "tag:dev.travelbot,2025:0001"
+            ],
+            "conversants": [
+                {
+                    "identification": {
+                        "speakerUri": "tag:userproxy.com,2025:abc123",
+                        "serviceUrl": "https://userproxy.com",
+                        "conversationalName": "John Doe",
+                        "role": "User",
+                        "organization": "",
+                        "synopsis": "" 
+                    }
+                },
+                {
+                    "identification": {
+                        "speakerUri": "tag:dev.travelbot,2025:0001",
+                        "serviceUrl": "https://dev.travelbot.ee/openfloor/conversation",
+                        "organization": "Travelbot Inc.",
+                        "conversationalName": "travelbot",
+                        "department": "Reservations and Customer Service",
+                        "role": "Reservation Specialist",
+                        "synopsis": "Reservation specialist as part of the Travelbot system."
+                    }
+                }
+            ]
+        },
+        "sender": {
+            "speakerUri": "tag:userproxy.com,2025:abc123"
+        },
+        "events": [
+        ]
+    }
+}
