@@ -1,0 +1,25 @@
+{
+    "openFloor": {
+      "schema": {
+        "version": "1.0.1"
+      },
+      "conversation": {
+        "id": "someUniqueIdForTheConversation",
+        "currentRoles": {
+          "convener": ["tag:some_Convener.com,2025:"]
+        }
+      },
+      "sender": {
+        "speakerUri": "tag:agentAcceptingInvite,2025:1234"
+      },
+      "events": [
+        {
+          "eventType": "acceptInvite",
+          "to": {
+            "speakerUri": "tag:some_Convener.com,2025:"
+          },
+          "reason": "@ready to support this request"
+        }
+      ]
+    }
+}

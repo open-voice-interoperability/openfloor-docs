@@ -1,0 +1,28 @@
+{
+    "openFloor": {
+      "schema": {
+        "version": "1.0.1"
+      },
+      "conversation": {
+        "id": "someUniqueIdForTheConversation",
+        "assignedFloorRoles": {
+          "convener": ["tag:some_Convener.com,2025:1234"]
+        },
+        "floorGranted": [
+          "tag:some_Convener.com,2025:1234"
+        ]
+      },
+      "sender": {
+        "speakerUri": "tag:some_Convener.com,2025:1234"
+      },
+      "events": [
+        {
+          "eventType": "revokeFloor",
+          "to": {
+            "speakerUri": "tag:agentBeingRevoked,2025:1234"
+          },
+          "reason": "@override"
+        }
+      ]
+    }
+  }

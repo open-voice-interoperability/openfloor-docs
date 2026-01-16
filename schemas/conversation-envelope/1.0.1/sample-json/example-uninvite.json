@@ -1,0 +1,25 @@
+{
+    "openFloor": {
+      "schema": {
+        "version": "1.0.1"
+      },
+      "conversation": {
+        "id": "someUniqueIdForTheConversation",
+        "currentRoles": {
+          "convener": ["tag:some_Convener.com,2025:"]
+        }
+      },
+      "sender": {
+        "speakerUri": "tag:some_Convener.com,2025:"
+      },
+      "events": [
+        {
+          "eventType": "uninvite",
+          "to": {
+            "speakerUri": "tag:agentBeingUninvited,2025:1234"
+          },
+          "reason": "@brokenPolicy: agents should not contain content that is offensive or encourages illegal activity"
+        }
+      ]
+    }
+  }
