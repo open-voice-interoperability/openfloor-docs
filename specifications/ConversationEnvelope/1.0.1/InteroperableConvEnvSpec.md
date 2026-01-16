@@ -9,7 +9,7 @@
 **Version 1.0.1**
 
 *_Editor-in-Chief: David Attwater_*\
-*_Contributors: Leah Barnes, Emmett Coin,  Deborah Dahl, Diego Gosmar, Jim Larson, Rainer Türner, Dirk Schnelle-Walka, Allan Wylie, Andreas Zettle_*
+*_Contributors: Leah Barnes, Csaba Bolyós, Emmett Coin,  Deborah Dahl, Diego Gosmar, Jim Larson, Rainer Türner, Dirk Schnelle-Walka, Allan Wylie, Andreas Zettle_*
 
 ## TABLE OF CONTENTS
 - [0 SCOPE AND INTRODUCTION](#0-SCOPE-AND-INTRODUCTION)
