@@ -1,12 +1,12 @@
 <img src="https://github.com/open-voice-interoperability/artwork/blob/main/horizontal/color/Interoperability_Logo_color.png" width="200">
 
-# Open Floor Inter-Agent Message Specification Version 1.0.1
+# Open Floor Inter-Agent Message Specification Version 1.1.0
 
 **The Open Floor Project**\
 **Open Voice Interoperability Initiative - LF AI & Data Foundation**
 
 **RELEASED** \
-**Version 1.0.1**
+**Version 1.1.0**
 
 *_Editor-in-Chief: David Attwater_*\
 *_Contributors: Leah Barnes, Csaba Bolyós, Emmett Coin,  Deborah Dahl, Diego Gosmar, Jim Larson, Rainer Türner, Dirk Schnelle-Walka, Allan Wylie, Andreas Zettl_*
@@ -212,8 +212,8 @@ This specification uses ‘camelCase’ (i.e. no spaces with new words being cap
       "openFloor": {
 
           "schema": {
-              "version": "1.0.1",      
-              "url": "https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.0.1/conversation-envelope-schema.json"
+              "version": "1.1.0",      
+              "url": "https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.1.0/conversation-envelope-schema.json"
           },
 
           "conversation": {
@@ -274,7 +274,7 @@ All sections are mandatory.
     {
       "openFloor": {
         ..
-        "schema": { "version": "1.0.1" }
+        "schema": { "version": "1.1.0" }
         ..
       }
     }
@@ -287,8 +287,8 @@ The _schema_ object specifies the format of the message in this Open-Floor envel
       "openFloor": {
         ..
         "schema": {
-          "version": "1.0.1",   
-          "url": "https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.0.1/conversation-envelope-schema.json"
+          "version": "1.1.0",   
+          "url": "https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.1.0/conversation-envelope-schema.json"
         }
         ..
       }
@@ -296,7 +296,7 @@ The _schema_ object specifies the format of the message in this Open-Floor envel
 
 ##### Figure 5. Other optional elements in the _schema_ object.
 
-The schema for the version of the envelope specification can be found in [https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.0.1/conversation-envelope-schema.json](https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.0.1/conversation-envelope-schema.json).  Figure 5 shows an optional _serviceUrl_ that may also be included which should point to the correct version of that JSON schema.
+The schema for the version of the envelope specification can be found in [https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.1.0/conversation-envelope-schema.json](https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.1.0/conversation-envelope-schema.json).  Figure 5 shows an optional _serviceUrl_ that may also be included which should point to the correct version of that JSON schema.
 
 #### 1.6 Conversation Object
 
@@ -640,7 +640,7 @@ For example, a video feature intended to represent Video Conversational agent co
     {
       "openFloor": {
           "schema": {
-            "version": "1.0.1"      
+            "version": "1.1.0"      
           },
           "conversation": {
             "id": "someUniqueIdCreatedByTheFirstParticipant"
@@ -674,7 +674,7 @@ It is possible to invite an agent to a conversation without giving it any other 
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"      
+          "version": "1.1.0"      
         },
         "conversation": {
           "id": "31050879662407560061859425913208"
@@ -737,7 +737,7 @@ Figure 16 shows a conversation envelope where the inviting agent tells the user 
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "conversation": {
           "id": "someUniqueIdForTheConversation"
@@ -774,7 +774,7 @@ The following special tokens have particular meaning in this event.
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "conversation": {
           "id": "someUniqueIdForTheConversation"
@@ -805,7 +805,7 @@ The _reason_ section is optional.  It can be used to signal the reason that the 
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "conversation": {
           "id": "someUniqueIdForTheConversation"
@@ -843,7 +843,7 @@ The following special _reason_ tokens have particular meaning in this event.
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"      
+          "version": "1.1.0"      
         },
         "conversation": {
           "id": "31050879662407560061859425913208"
@@ -866,7 +866,7 @@ When an agent wants to leave the conversation it sends a _bye_ event.  This mess
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"      
+          "version": "1.1.0"      
         },
         "conversation": {
           "id": "31050879662407560061859425913208"
@@ -921,7 +921,7 @@ A _getManifests_ event can also optionally be accompanied by a private utterance
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"      
+          "version": "1.1.0"      
         },
         "conversation": {
           "id": "31050879662407560061859425913208"
@@ -953,7 +953,7 @@ The returned manifest list will be expected to only contain manifests from the t
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"      
+          "version": "1.1.0"      
         },
         "conversation": {
           "id": "31050879662407560061859425913208"
@@ -1004,7 +1004,7 @@ The target assistant should return a _publishManifests_ containing any agents th
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"      
+          "version": "1.1.0"      
         },
         "conversation": {
           "id": "31050879662407560061859425913208"
@@ -1065,7 +1065,7 @@ See section 1.18 for more information on _publishManifests_ event behaviors.
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"      
+          "version": "1.1.0"      
         },
         "conversation": {
           "id": "31050879662407560061859425913208"
@@ -1178,7 +1178,7 @@ The recommending agent is free to use any mechanism it wants to generate the _sc
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "conversation": {
           "id": "someUniqueIdForTheConversation"
@@ -1213,7 +1213,7 @@ The optional _reason_ section can be used to convey the reason for the floor req
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "conversation": {
           "id": "someUniqueIdForTheConversation"
@@ -1243,7 +1243,7 @@ In one use case, the _grantFloor_ event can be sent by floor managers in respons
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "conversation": {
           "id": "someUniqueIdForTheConversation"
@@ -1297,7 +1297,7 @@ The accompanying private _utterance_ event  explains in natural language and sup
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "conversation": {
           "id": "someUniqueIdForTheConversation"
@@ -1337,7 +1337,7 @@ The optional _reason_ key can be used to convey the reason that the floor has be
     {
       "openFloor": {
         "schema": {
-          "version": "1.0.1"
+          "version": "1.1.0"
         },
         "conversation": {
           "id": "someUniqueIdForTheConversation"
@@ -1483,7 +1483,7 @@ If the messaging protocol that sent the envelope requires a response (e.g. HTTP 
 
 ## 3 JSON Envelope Schema
 
-The structure of a JSON conversation envelope is defined as a JSON Schema located at [https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.0.1/conversation-envelope-schema.json]
+The structure of a JSON conversation envelope is defined as a JSON Schema located at [https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.1.0/conversation-envelope-schema.json]
 
 ## 4 References
 
@@ -1573,3 +1573,4 @@ This section documents some of the key design decisions that were made by the te
 |0.9.4|2025.05.13|- Changed speakerId to be speakerUri <br>- Make "to" a dictionary containing "serviceUrl" and "speakerUri" in all events</br> - Added section on identity and speakerUri</br>- Add 'floorYield" to mirror "floorRevoke"<br> - Added conversants section<br>- Added the requirement for speakerUri to be unique and persistent for each agent<br>- Removed the need for url to uniquely identify an agent<br>- Refactored requestManifest into a unified findAgent<br>- Added recommendScope to findAgent<br>- Changed publishManifests to return full array of manifests not just the synopsis<br>- Move private into 'to' of the event<br>- Added 'speakerUri' into the 'sender'<br>- Rename serviceEndpoint to serviceUrl and also rename 'url' as 'serviceUrl' in sender and to objects.<br> - Add optional "dialogHistory" section to _Invite_ and _getManifests_ events.<br>- Limit conversants to identification section only.<br>- Move persistent state into the conversant section<br>- Added section on multi-party conversations.<br>- Added description for _requestFloor_ and make it informative not normative.<br>- Added description for _grantFloor_ and make it informative not normative.<br> - Added a description for _revokeFloor_ and normative reason labels <br>- Change the score on _proposeAgent_ to be between 0 and 1.  <br>- uninvite : add description for the uninvite. <br>- Add categories for the _uninvite_ reason.<br> - remove _whisper_ in favor or private _utterance_ and embedded _dialog_events_ </br>- created a top-level context event containing a dialogHistory parameter and leaving it open for other random data to be in there. </br>- removed dialogEvent from all sub-events apart from dialogHistory and utterance </br> - re-instated getManifests, publishManifests, describeAssistant (and publishManifests)</br>- retired context in dialogEvent</br>- make it clear in the spec that utterances can be private or not and that private utterances are whispers. </br>- retire requestManifest  </br>- renamed findAssistant to be getManifests. return publishManifests.</br>- made recommendScope default to internal </br>- made -servicingManifests and discoveryManifests optional in publishManifests. </br>- made reason an optional key in all events</br>- defined special reserved key words in the _reason_ key.</br>- specified which reserved _reason_ keywords applied in which events.- Introduced a separate bare event 'declineInvite' </br> - renamed the spec as Open-floor Inter-Agent Message Specification with the key: "openFloor"|
 |1.0.0|2025.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
 |1.0.1|2026.01.13|- Added assignedFloorRoles</br>- Added floorGranted section to conversation object</br>- Added convener to assignedFloorRoles</br>- Added acceptInvite</br>- Moved dialogHistory into Invite event</br>- Removed Context event</br>- Expanded the multi-party conversation section including Convener and Floor Management sections.</br>- Removed persistentState from conversants</br>- Clarified the role of the floor manager in section 0.4.3</br>- Completed the floor management minimal behaviour including:</br>&nbsp;&nbsp;- Ignoring the privacy flag for all events apart from utterance.</br>&nbsp;&nbsp;- Simplify the table to a simple delegate/pass-through</br>&nbsp;&nbsp;- Define how requestFloor is translated into grantFloor/revokeFloor.</br>&nbsp;&nbsp;- Specify the processing order of events|
+|1.1.0|2026.01.13|Version 1.0.1 up-issued and released as Version 1.1|

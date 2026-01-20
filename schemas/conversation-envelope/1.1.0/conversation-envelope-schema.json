@@ -1,5 +1,5 @@
 {
-  "$id": "https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.0.1/conversation-envelope-schema.json",
+  "$id": "https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.1.0/conversation-envelope-schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "A representation of a 'dialogue envelope' - the universal data exchange format for an Open-Floor compliant interoperable agent.",
   "type": "object",

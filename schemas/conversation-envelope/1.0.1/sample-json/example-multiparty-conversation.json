@@ -1,0 +1,88 @@
+{
+    "openFloor": {
+        "schema": {
+            "version": "1.0.1"
+        },
+        "conversation": {
+            "id": "jk31050879662407560061859425913208",
+            "assignedFloorRoles": {
+                "convener": ["tag:dev.buerokratt.ee,2025:0001"]
+            },
+            "floorGranted": [
+                "tag:user1.example.com,2025:1234",
+                "tag:agent2.example.com,2025:5678"
+            ],
+            "conversants": [
+                {
+                    "identification": {
+                        "speakerUri": "tag:dev.buerokratt.ee,2025:0001",
+                        "serviceUrl": "https://dev.buerokratt.ee/openfloor/conversation",
+                        "organization": "Government of Estonia",
+                        "conversationalName": "Buerokratt",
+                        "department": "Passport Office",
+                        "role": "Immigration Specialist",
+                        "synopsis": "Immigration specialist as part of the Buerokratt system.",
+                        "openFloorRoles": {
+                            "convener": true
+                        }
+                    }
+                },
+                {
+                    "identification": {
+                        "speakerUri": "tag:user1.example.com,2025:1234",
+                        "serviceUrl": "https://userproxy.example.com",
+                        "organization": "",
+                        "conversationalName": "Alice",
+                        "role": "User",
+                        "synopsis": "A user seeking immigration assistance.",
+                        "openFloorRoles": {
+                            "convener": false
+                        }
+                    }
+                },
+                {
+                    "identification": {
+                        "speakerUri": "tag:agent2.example.com,2025:5678",
+                        "serviceUrl": "https://agent2.example.com/openfloor",
+                        "organization": "Travel Services Inc.",
+                        "conversationalName": "TravelBot",
+                        "department": "Booking",
+                        "role": "Travel Advisor",
+                        "synopsis": "An assistant for booking travel arrangements.",
+                        "openFloorRoles": {
+                            "convener": false
+                        }
+                    }
+                }
+            ]
+        },
+        "sender": {
+            "speakerUri": "tag:user1.example.com,2025:1234",
+            "serviceUrl": "https://userproxy.example.com"
+        },
+        "events": [
+            {
+                "eventType": "utterance",
+                "parameters": {
+                    "dialogEvent": {
+                        "id": "de:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                        "speakerUri": "tag:user1.example.com,2025:1234",
+                        "span": {
+                            "startTime": "2025-06-14T10:30:00Z"
+                        },
+                        "features": {
+                            "text": {
+                                "mimeType": "text/plain",
+                                "tokens": [
+                                    {
+                                        "value": "Do I need a visa to enter Estonia from Spain?"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}
