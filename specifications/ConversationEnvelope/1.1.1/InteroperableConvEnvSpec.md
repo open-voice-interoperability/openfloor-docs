@@ -323,7 +323,8 @@ It is the responsibility of the floor manager (or the agent playing the role of 
           "id": "jk31050879662407560061859425913208",
 
           "assignedFloorRoles" : { 
-            "convener" : ["tag:dev.buerokratt.ee,2025:0001"] 
+            "convener" : ["tag:dev.buerokratt.ee,2025:0001"],
+            "owner"    : ["tag:user1.example.com,2025:1234"]
           },
 
           "floorGranted" : [
@@ -390,6 +391,9 @@ The roles that a floor manager can assign are listed below.  The default value o
 |Open-Floor Role|Description|Default manifest role|Max conversants|
 |-|-|-|-|
 |`convener`|The agent is acting as floor convener, dealing with invites and floor grant requests|False|1|
+|`owner`|The conversant(s) who have priority in defining the goals of the conversation and have priority of floor ownership|N/A|N|
+
+The `owner` role is distinct from other roles in that it is not a capability advertised by a conversant in their manifest.  Instead, it is assigned by the floor manager at the start of a conversation based on context that is outside the scope of the OFP specification (for example, the floor manager may assign ownership to the human user who initiated the session).  The floor manager maintains the `owner` assignment so that all conversants — and in particular the convener — know which participant(s) have priority when resolving competing goals or floor requests.  There is no requirement for an owner to be present in a conversation; however when one is assigned the convener should give precedence to their requests.
 
 ##### 1.6.3 The _floorGranted_ section
 
@@ -1575,4 +1579,4 @@ This section documents some of the key design decisions that were made by the te
 |1.0.0|2025.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
 |1.0.1|2026.01.13|- Added assignedFloorRoles</br>- Added floorGranted section to conversation object</br>- Added convener to assignedFloorRoles</br>- Added acceptInvite</br>- Moved dialogHistory into Invite event</br>- Removed Context event</br>- Expanded the multi-party conversation section including Convener and Floor Management sections.</br>- Removed persistentState from conversants</br>- Clarified the role of the floor manager in section 0.4.3</br>- Completed the floor management minimal behaviour including:</br>&nbsp;&nbsp;- Ignoring the privacy flag for all events apart from utterance.</br>&nbsp;&nbsp;- Simplify the table to a simple delegate/pass-through</br>&nbsp;&nbsp;- Define how requestFloor is translated into grantFloor/revokeFloor.</br>&nbsp;&nbsp;- Specify the processing order of events|
 |1.1.0|2026.01.13|Version 1.0.1 up-issued and released as Version 1.1|
-|1.1.1||-Clarified the default utterance floor behaviour in section 2.2</BR>TODO: Add new_conversation, delete_conversation events.  (is this outside of ofp?)  |
+|1.1.1|2026.04.21|- Clarified the default utterance floor behaviour in section 2.2</br>- Added `owner` role to _assignedFloorRoles_ to identify conversant(s) with priority in defining conversation goals and floor ownership</br>- Added section 1.6.2 prose clarifying that `owner` is assigned at conversation start by the floor manager based on context outside the OFP spec</br>- Updated Figure 7 example to show `owner` in _assignedFloorRoles_</br>TODO: Add new_conversation, delete_conversation events.  (is this outside of ofp?)|
