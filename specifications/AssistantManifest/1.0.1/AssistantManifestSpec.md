@@ -142,9 +142,9 @@ A list of the valid roles in that document is repeated below, including the defa
 |-|-|-|
 |`convener`|The agent is able to act as as floor convener, dealing with invites and floor grant requests|False| 
 |`discovery`|The agent is able to act as a a discovery agent|False| 
+|`archivist`|The agent will answer historical questions about the conversation|False|
 
-
-Note that it is the responsibility of the floor manager to assign the role of a convener to a floor. The manifest record indicates willingness to perform the role. It is not a guarantee that this role will be assigned.
+Note that it is the responsibility of the floor manager to assign the role of a convener.  It is the role of the convener to invite and assign an archivist. The manifest record indicates willingness to perform the role. It is not a guarantee that this role will be assigned.
 
 #### 1.7 The `capabilities` object
 

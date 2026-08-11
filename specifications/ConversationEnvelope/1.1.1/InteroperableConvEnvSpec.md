@@ -140,7 +140,15 @@ Note that any conversant can invite any other conversant to the conversation. Th
 
 If the conversation does not have a convener assigned then the floor manager will play the role of a convener, meeting the minimum requirements for a convener.  For more details, see the section on [Minimal Behaviours for a Convener](#minimal-behaviours-for-a-convener).  There is no guarantee that a conversation without a convener will be stable but a convenerless floor can be helpful for collaboration between groups of agents that are aware of each other and strongly aligned in their ethos and goals.
 
-#### 0.4.3 Managing the floor
+#### 0.4.3 Archivist
+
+An 'Archivist' agent can be invited to a conversation to observe it, from the point that it accepts its invite until it is uninvited, and to answer natural-language enquiries about the conversation's history. For example, a conversant could ask an archivist "Give me a summary of the last ten turns of the conversation" or "Has the issue of land rights for aboriginal people been discussed yet in the conversation?".
+
+The motivation for having a dedicated archivist agent is to provide historical-recall services to other, lower-resource conversants, particularly in long-running conversations where retaining and reasoning over the full history would otherwise be costly. An archivist is also particularly useful for conversants who join a conversation part way through, letting them query for relevant context on demand rather than requiring the floor to replay a large _dialogHistory_ to them.
+
+As with the convener, willingness to act as an archivist is advertised by a conversant in its manifest, but it is the responsibility of the convener to invite and assign the archivist role (see [1.6.2 The _assignedFloorRoles_ section](#162-the-assignedfloorroles-section)).
+
+#### 0.4.4 Managing the floor
 
 The floor manager also maintains and publishes a list of which conversants currently have floor rights. (See the [_floorGranted_ section in the conversation object](#16-conversation-object) for more details.)
 
@@ -392,6 +400,7 @@ The roles that a floor manager can assign are listed below.  The default value o
 |-|-|-|-|
 |`convener`|The agent is acting as floor convener, dealing with invites and floor grant requests|False|1|
 |`owner`|The conversant(s) who have priority in defining the goals of the conversation and have priority of floor ownership|N/A|N|
+|`archivist`|The agent is observing the conversation and answering natural-language enquiries about its history|False|N|
 
 The `owner` role is distinct from other roles in that it is not a capability advertised by a conversant in their manifest.  Instead, it is assigned by the floor manager at the start of a conversation based on context that is outside the scope of the OFP specification (for example, the floor manager may assign ownership to the human user who initiated the session).  The floor manager maintains the `owner` assignment so that all conversants — and in particular the convener — know which participant(s) have priority when resolving competing goals or floor requests.  There is no requirement for an owner to be present in a conversation; however when one is assigned the convener should give precedence to their requests.
 
@@ -710,6 +719,7 @@ It is possible to invite an agent to a conversation without giving it any other 
               "speakerUri": "tag:botThatIsBeingInvited.com,2025:1234"
             },
             "parameters": {
+              "expectedFloorRoles": ["convener"],
               "dialogHistory": [
                 { .. utterance dialog event N-2 .. },
                 { .. utterance dialog event N-1 .. },
@@ -734,7 +744,9 @@ It is possible to invite an agent to a conversation without giving it any other 
 
 Invite events may be accompanied by additional events and contain optional parameters. The _invite_ event can include an optional _dialogHistory_ parameter which is a simple list of dialog events containing some or all of the utterances in the dialog. It is good practice to order these in startTime order (in universal time) with the most recent event being the last item in the list. It is at the discretion of the sender of the _invite_ to decide how much history to include and whether to omit or anonymize certain dialogEvents in order to maintain security and confidentiality. For example, the inviting agent may decide to send the last 'N' (e.g. N=4) events in the dialog as if the invited agent had been at the floor for those N dialog turns. If the agents had not been entitled to receive some of those events then these could also be omitted from the dialogHistory array or anonymized or redacted in some fashion.
 
-Figure 16 shows a conversation envelope where the inviting agent tells the user that they are inviting another agent to speak with them. Then the invite event issues the invitation with dialog history to help the invited bot respond appropriately.
+The _invite_ event can also include an optional _expectedFloorRoles_ parameter, an array of strings naming the Open-Floor role(s) that the inviting agent expects the invited agent to take on. The values in this array use the same role names as the keys in the _assignedFloorRoles_ dictionary (see section 1.6.2). If the invited agent accepts the invite by sending an _acceptInvite_ event (see section 1.14), this is interpreted by the floor manager as the agent's agreement to adopt the role(s) listed in _expectedFloorRoles_, and the floor manager should update _assignedFloorRoles_ accordingly. If the invited agent is not willing or able to take on the requested role(s), it should send a _declineInvite_ event (see section 1.15) using the `@roleRejected` reason token to explain why.
+
+Figure 16 shows a conversation envelope where the inviting agent tells the user that they are inviting another agent to speak with them. Then the invite event issues the invitation with expected floor roles and dialog history to help the invited bot respond appropriately.
 
 ### 1.13 uninvite Event
 
@@ -800,7 +812,7 @@ The following special tokens have particular meaning in this event.
 
 ##### Figure 18. A typical acceptInvite event
 
-The _acceptInvite_ event can be sent in response to an _invite_ event.  It is a bare event with no parameters.  Its purpose is to accept an invite and confirm readiness to participate in the conversation.  Figure 18 shows an example.
+The _acceptInvite_ event can be sent in response to an _invite_ event.  It is a bare event with no parameters.  Its purpose is to accept an invite and confirm readiness to participate in the conversation.  If the original _invite_ included an _expectedFloorRoles_ parameter, sending _acceptInvite_ also confirms the agent's agreement to adopt those role(s) (see section 1.12).  Figure 18 shows an example.
 
 The _reason_ section is optional.  It can be used to signal the reason that the agent chose to accept the invite.  There are no tokens with special meaning for this currently.  
 
@@ -841,6 +853,7 @@ The following special _reason_ tokens have particular meaning in this event.
 |@unavailable|The agent is declining the invite because it temporarily unavailable for some reason such as lack of resources|
 |@refused|The agent is declining the invite because it is not willing to handle this request|
 |@error|The agent is declining the floor because it has encountered an error from which it cannot recover|
+|@roleRejected|The agent is declining the invite because it is not willing or able to adopt the Open-Floor role(s) requested in the _expectedFloorRoles_ parameter of the invite|
 
 #### 1.16 bye Event
 
@@ -1579,4 +1592,4 @@ This section documents some of the key design decisions that were made by the te
 |1.0.0|2025.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
 |1.0.1|2026.01.13|- Added assignedFloorRoles</br>- Added floorGranted section to conversation object</br>- Added convener to assignedFloorRoles</br>- Added acceptInvite</br>- Moved dialogHistory into Invite event</br>- Removed Context event</br>- Expanded the multi-party conversation section including Convener and Floor Management sections.</br>- Removed persistentState from conversants</br>- Clarified the role of the floor manager in section 0.4.3</br>- Completed the floor management minimal behaviour including:</br>&nbsp;&nbsp;- Ignoring the privacy flag for all events apart from utterance.</br>&nbsp;&nbsp;- Simplify the table to a simple delegate/pass-through</br>&nbsp;&nbsp;- Define how requestFloor is translated into grantFloor/revokeFloor.</br>&nbsp;&nbsp;- Specify the processing order of events|
 |1.1.0|2026.01.13|Version 1.0.1 up-issued and released as Version 1.1|
-|1.1.1|2026.04.21|- Clarified the default utterance floor behaviour in section 2.2</br>- Added `owner` role to _assignedFloorRoles_ to identify conversant(s) with priority in defining conversation goals and floor ownership</br>- Added section 1.6.2 prose clarifying that `owner` is assigned at conversation start by the floor manager based on context outside the OFP spec</br>- Updated Figure 7 example to show `owner` in _assignedFloorRoles_</br>TODO: Add new_conversation, delete_conversation events.  (is this outside of ofp?)|
+|1.1.1|2026.04.21|- Clarified the default utterance floor behaviour in section 2.2</br>- Added `owner` role to _assignedFloorRoles_ to identify conversant(s) with priority in defining conversation goals and floor ownership</br>- Added section 1.6.2 prose clarifying that `owner` is assigned at conversation start by the floor manager based on context outside the OFP spec</br>- Updated Figure 7 example to show `owner` in _assignedFloorRoles_</br>- Added optional `expectedFloorRoles` parameter to the _invite_ event, allowing the inviting agent to specify Open-Floor role(s) (matching _assignedFloorRoles_ keys) that the invited agent is expected to adopt on acceptance</br>- Added the `@roleRejected` reason token to _declineInvite_ for rejecting a requested role</br>- Clarified in section 1.14 that _acceptInvite_ confirms adoption of any roles requested via _expectedFloorRoles_</br>- Added new section 0.4.3 describing the _Archivist_ role and its expected services, renumbering the former 0.4.3 'Managing the floor' to 0.4.4</br>- Added `archivist` role to the _assignedFloorRoles_ table in section 1.6.2</br>TODO: Add new_conversation, delete_conversation events.  (is this outside of ofp?)|

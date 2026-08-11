@@ -228,6 +228,13 @@
                             "type": "object",
                             "ref": "https://github.com/open-voice-interoperability/lib-interop/tree/main/schemas/dialog-event/1.0.2/dialog-event-schema.json"
                           }
+                        },
+                        "expectedFloorRoles": {
+                          "type": "array",
+                          "description": "Optional list of Open-Floor role names (matching the keys used in conversation.assignedFloorRoles) that the inviting agent expects the invited agent to adopt. Accepting the invite (acceptInvite) is taken as agreement to adopt these roles; an agent unwilling or unable to do so should send declineInvite with the @roleRejected reason token.",
+                          "items": {
+                            "type": "string"
+                          }
                         }
                       },
                       "additionalProperties": false

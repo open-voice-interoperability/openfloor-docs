@@ -33,6 +33,7 @@
           "speakerUri": "tag:botThatIsBeingInvited.com,2025:1234"
         },
         "parameters": {
+          "expectedFloorRoles": ["convener"],
           "dialogHistory": [
             {
               "speakerUri": "tag:theUser.com,2025:3456",
