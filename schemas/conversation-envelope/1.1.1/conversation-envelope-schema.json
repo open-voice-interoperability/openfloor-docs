@@ -101,10 +101,11 @@
                 },
                 "owner": {
                   "type": "array",
-                  "description": "Array of speakerURIs for conversants assigned the owner role. Owners have priority in defining conversation goals and floor ownership. Assigned at conversation start by the floor manager; the assignment mechanism is outside the scope of OFP.",
+                  "description": "Array of speakerURIs for the conversant assigned the owner role. The owner has priority in defining conversation goals and floor ownership. Assigned at conversation start by the floor manager; the assignment mechanism is outside the scope of OFP. Maximum cardinality is 1.",
                   "items": {
                     "$ref": "#/$defs/uri"
-                  }
+                  },
+                  "maxItems": 1
                 }
               },
               "additionalProperties": {
