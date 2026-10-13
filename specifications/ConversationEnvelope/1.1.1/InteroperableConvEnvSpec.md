@@ -5,7 +5,7 @@
 **The Open Floor Project**\
 **Open Voice Interoperability Initiative - LF AI & Data Foundation**
 
-**DRAFT** \
+**RELEASED** \
 **Version 1.1.1**
 
 *_Editor-in-Chief: David Attwater_*\
@@ -224,7 +224,7 @@ This specification uses ‘camelCase’ (i.e. no spaces with new words being cap
 
           "schema": {
               "version": "1.1.1",      
-              "url": "https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json"
+              "url": "https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json"
           },
 
           "conversation": {
@@ -299,7 +299,7 @@ The _schema_ object specifies the format of the message in this Open-Floor envel
         ..
         "schema": {
           "version": "1.1.1",   
-          "url": "https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json"
+          "url": "https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json"
         }
         ..
       }
@@ -307,7 +307,7 @@ The _schema_ object specifies the format of the message in this Open-Floor envel
 
 ##### Figure 5. Other optional elements in the _schema_ object.
 
-The schema for the version of the envelope specification can be found in [https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json](https://github.com/open-voice-interoperability/docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json).  Figure 5 shows an optional _serviceUrl_ that may also be included which should point to the correct version of that JSON schema.
+The schema for the version of the envelope specification can be found in [https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json).  Figure 5 shows an optional _serviceUrl_ that may also be included which should point to the correct version of that JSON schema.
 
 #### 1.6 Conversation Object
 
@@ -397,7 +397,7 @@ Conversants advertise their willingness to perform certain roles in the _Identif
 
 Conversants are not limited to fulfilling a single role, they can have any number of roles within a conversation.
 
-The roles that a floor manager can assign are listed below.  The default value of the _Identification.openFloorRoles_ element for each conversant are defined in [[4]](https://github.com/open-voice-interoperability/docs/blob/main/specifications/AssistantManifest/1.0.1/AssistantManifestSpec.md) and repeated below for clarity.   
+The roles that a floor manager can assign are listed below.  The default value of the _Identification.openFloorRoles_ element for each conversant are defined in [[4]](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/specifications/AssistantManifest/1.0.1/AssistantManifestSpec.md) and repeated below for clarity.   
 
 |Open-Floor Role|Description|Default manifest role|Max conversants|
 |-|-|-|-|
@@ -576,7 +576,7 @@ The _to_ parameter is optional and by default utterance events are public and ad
 They can however be addressed to specific conversants and/or made private using the private flag in the _to_ element of the event.
 A private utterance event is also termed a 'whisper'.  These can be used to convey instructions and contextual information behind the scenes between conversants.
 
-The _dialogEvent_ element must contain a valid dialog event object as specified in [[2] Interoperable Dialog Event Object Specification Version 1.0.2](https://github.com/open-voice-interoperability/docs/blob/main/specifications/DialogEvents/1.0.2/InteropDialogEventSpecs.md)
+The _dialogEvent_ element must contain a valid dialog event object as specified in [[2] Interoperable Dialog Event Object Specification Version 1.0.2](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/specifications/DialogEvents/1.0.2/InteropDialogEventSpecs.md)
 
 Compliant Open-Floor dialog agents must respond to the content in the `text` feature.  All other content can be ignored and the agent will still be considered compliant.
 
@@ -1504,7 +1504,7 @@ If the messaging protocol that sent the envelope requires a response (e.g. HTTP 
 
 ## 3 JSON Envelope Schema
 
-The structure of a JSON conversation envelope is defined as a JSON Schema located at [https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json]
+The structure of a JSON conversation envelope is defined as a JSON Schema located at [https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json]
 
 ## 4 Normative Protocol Implementations
 
@@ -1529,9 +1529,9 @@ The numbered rules above are normative. Other details remain unspecified - see t
 ## 5 References
 
 [1] **Interoperability of Conversational Assistants** [https://openvoicenetwork.org/docs/interoperability-of-conversational-assistants/] \
-[2] **Interoperable Dialog Event Object Specification Version 1.0.2** [https://github.com/open-voice-interoperability/docs/blob/main/specifications/DialogEvents/1.0.2/InteropDialogEventSpecs.md] \
+[2] **Interoperable Dialog Event Object Specification Version 1.0.2** [https://github.com/open-voice-interoperability/openfloor-docs/blob/main/specifications/DialogEvents/1.0.2/InteropDialogEventSpecs.md] \
 [3] **IETF RFC 9110 HTTP Semantics.** [https://datatracker.ietf.org/doc/html/rfc9110/] \
-[4] **Assistant Manifest Specification Version 1.0.1** [https://github.com/open-voice-interoperability/docs/blob/main/specifications/AssistantManifest/1.0.1/AssistantManifestSpec.md] \
+[4] **Assistant Manifest Specification Version 1.0.1** [https://github.com/open-voice-interoperability/openfloor-docs/blob/main/specifications/AssistantManifest/1.0.1/AssistantManifestSpec.md] \
 [5] **IETF RFC 8141 Uniform Resource Names (URNs)**[https://datatracker.ietf.org/doc/html/rfc8141] \
 [6] **IETF RFC 4151 The Tag URL Scheme**[https://www.rfc-editor.org/rfc/rfc4151] \
 [7] **AI Multi-Agent Interoperability Extension for Managing Multiparty Conversations.** [https://arxiv.org/abs/2411.05828]
@@ -1578,7 +1578,7 @@ This section documents some of the key design decisions that were made by the te
 |Go-Back|_Question:_ How can control be passed back to a previous agent?</br>_Answer:_ There is no explicit 'go-back' event or concept.  The _yeildFloor_ event supports the passing of reasons such @complete or @timedOut.   Control can be explicitly passed back to a previous agent through an explicit invite from the current focal agent.  Alternatively, the conversation floor manager can generate an invite to bring a 'favored' agent into the conversation, for example, where the current focal agent is not meeting expectations for conversational interaction.
 |Control flow and exceptions|_Question:_ How do we handle timeouts and what is responsible for them?</br>_Answer:_ There is no mandated behavior regarding timeouts and exceptions.   Each conversation floor manager can choose the behavior in this regard.  The @timedOut reason is explicitly supported for yieldFloor, revokeFloor and uninvite.  This allows a conversant to yeild the floor if they time out or the floor to decide to revoke the floor or uninvite an agent if certain time expectations are not met. |
 |Host Browsers and User Proxies|_Question:_ Is the host browser a user proxy or does it have unique responsibilities for control?</br>_Answer:_ The host browser is a close coupling of a user proxy and a conversation floor manager.  User proxies and floor managers can be implemented separately and communicate using dialog envelopes.  This has not been fully proven yet and there are likely to be additional control structures needed to fully support the separation.  We anticipate that early adoption of this standard will require a unified host browser.|
-|location of schemas|_Question:_ Where should we publish the schema?</br>_Answer:_ Let's use https://github.com/open-voice-interoperability/lib-interop/tree/main/schemas, but add a new subfolder for each version (e.g. "1.0.1" for the current schemas).|
+|location of schemas|_Question:_ Where should we publish the schema?</br>_Answer:_ Let's use https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas, but add a new subfolder for each version (e.g. "1.0.1" for the current schemas).|
 |reply_to |_Question_: Should reply_to be optional, mandatory (or removed)?</br>_Answer:_ The reply_to element appears to have become redundant and was retired out of the specification in version 9.9.2.|
 |How are conversations started?|_Question:_ Thre is nothing in the envelope spec to allow a conversant to initiate a conversation.  How do conversations start?</br>_Answer:_ This is missing for a reason.  If the specification is used with the model of a floor running as the HTTP client and agents being HTTP servers then all agent activity needs to be in response to a POST.  For now, it is assumed that implementation of the current version of the specification will have a combined proxy agent and conversation floor manager and the initiation of a dialog will be a proprietary feature of that combined component.  If the userProxy agents are able to initiate events then a 'start' event (or some similar name) could be added in later versions of the specification.  Such an event would for example, come from the proxy agent to the conversation floor manager and result in the creation of a conversationId.Another alternative is that the floor Invites the user to the conversation - but that would require the protocol used to support long wait times until the response is received.  in short we may need a different protocol that supports truly asynchronous messaging in order to implement the separation of the floor and proxy agent.|
 |Interruptions and Univiting agents.|_Question:_ How does one conversation stop the operation of another conversant?  For example, how might a user tell an agent to be quiet?  </br>_Answer:_  The event types: _uninvite_ and _revokeFloor_ support this pattern. The spec is silent about whether _revokeFloor_ should caus a real-time interruption of spoken output or revoke the floor at the end of the user utterance.|
@@ -1602,6 +1602,8 @@ This section documents some of the key design decisions that were made by the te
 |Arbitrary text in "reasons"|_Question:_ Should we let "reasons"  contain arbitrary text?</br>_Answer_: Yes. We will make reason an optional key in all events and allow it to be open text with special reserved words in the form '@timed-out'. Include a list of supported reserve words and also indicate in individual events how these reserved words might apply in that context.|
 |Are manifest accretive?|_Question_:  When reading section 1.15 of the Conversational Envelope I was wondering. Who are the participants that should receive a publishManifests message In case you have a sequence: Agent A - Agent B - Agent C. So A invites B and B invites C. Hence, A may not know about C but only B. How is this to be reflected in the manifest as the capabilities of C will add to those of B?<br>_Answer:_ No we are not anticipating that manifests will be cumulative. The envelope contains a 'conversants' section in the 'conversation' area. For each conversants we keep partial manifests containing the 'identity' information for each agent. Thus any party to the conversation can request full manifest information from any conversant at any time. So if tasks are delegated round-table to other agents then it is clear that the other agent is providing this service and you can use their manifest directly in this case. If an agent is using the services of other agents behind the scenes then this is their private affair. We expect an agent to include in its manifest the range of services that it offers regardless of how it provides this. So if an agent is general purpose and is 'rebadging' the services of other agents then the their manifest should explain that they are a general purpose agent. We are not currently anticipating that manifests will be dynamic in nature depending context. We are expecting that manifests might be updated as capabilities change.|
 |Declining invites|_Question_:Section 1.13 of the Conversational Envelope specification describes the invite event. Can an invite be rejected? If yes, how can this be done? I remember a busy-out method in the times of IVRs. The purpose was to complete ongoing calls and not to accept new calls, e.g., if the system should go down for maintenance. Is there something comparable?<br>_Answer:_ Added a bare event 'declineInvite'|
+|Normative use of HTTP|_Question:_ Should the specification include a normative use of HTTP for implementing OFP?<br>_Answer:_ Yes. [Section 4.1](#41-HTTPS) defines the normative use of HTTPS: agents are web servers accepting POST at their _serviceUrl_ and the floor is the web client.
+|Synchronous HTTP responses|_Question:_ Should the response to an HTTP POST carry the agent's reply, or should replies arrive later as a separate POST?<br>_Answer:_ Communication over HTTP is synchronous only. The 200 response body is the agent's reply envelope (empty _events_ array if there is nothing to say) and agents never POST to the floor. See [section 4.1](#41-HTTPS).|
 
 ## 8 Outstanding Issues
 
@@ -1610,7 +1612,6 @@ This section tracks known gaps or open questions in the specification that have 
 |Issue Topic|Description|Status|
 |-|-|-|
 |new_conversation / delete_conversation events|Add `new_conversation` and `delete_conversation` events. It is unclear whether this is in scope for OFP or should be left to implementations.|Open|
-|Normative use of HTTP|Add a section on the normative use of HTTP for implementing OFP.|Resolved - see [section 4, Normative Protocol Implementations](#4-Normative-Protocol-Implementations)|
 |Floor/user-proxy interface and conversation initiation|There is currently no standard for how conversations are initiated, or for how the floor might support the interface to users. The interface between a floor and user-proxies, and other control mechanisms such as starting or ending a conversation, are outside the scope of this standard (see also the 'How are conversations started?' entry in the Decision Log).|Open|
 |Further HTTP implementation details|[Section 4.1](#41-HTTPS) defines the synchronous reply-envelope model. The following remain unresolved:<br>(1) timeout and retry semantics, and idempotency expectations on retry;<br>(2) how an agent behind a NAT or firewall participates;<br>(3) TLS version and certificate expectations, including mutual TLS;<br>(4) authentication/authorization of POST requests (deliberately out of scope per section 1.2);<br>(5) how an agent's manifest and _serviceUrl_ are discovered over HTTP;<br>(6) concurrency and ordering for overlapping requests on the same _conversationId_;<br>(7) maximum envelope size;<br>(8) CORS for browser-hosted clients.|Open|
 
@@ -1626,4 +1627,4 @@ This section tracks known gaps or open questions in the specification that have 
 |1.0.0|2025.05.14|-Released version 0.9.4 as 1.0.0 with final proof read</br>-Moved artwork into this repository|
 |1.0.1|2026.01.13|- Added assignedFloorRoles</br>- Added floorGranted section to conversation object</br>- Added convener to assignedFloorRoles</br>- Added acceptInvite</br>- Moved dialogHistory into Invite event</br>- Removed Context event</br>- Expanded the multi-party conversation section including Convener and Floor Management sections.</br>- Removed persistentState from conversants</br>- Clarified the role of the floor manager in section 0.4.3</br>- Completed the floor management minimal behaviour including:</br>&nbsp;&nbsp;- Ignoring the privacy flag for all events apart from utterance.</br>&nbsp;&nbsp;- Simplify the table to a simple delegate/pass-through</br>&nbsp;&nbsp;- Define how requestFloor is translated into grantFloor/revokeFloor.</br>&nbsp;&nbsp;- Specify the processing order of events|
 |1.1.0|2026.01.13|Version 1.0.1 up-issued and released as Version 1.1|
-|1.1.1|2026.09.29|- Clarified the default utterance floor behaviour in section 2.2</br>- Added `owner` role to _assignedFloorRoles_ to identify the conversant with priority in defining conversation goals and floor ownership</br>- Added section 1.6.2 prose clarifying that `owner` is assigned at conversation start by the floor manager</br>- Updated Figure 7 example to show `owner` in _assignedFloorRoles_</br>- Added optional `expectedFloorRoles` parameter to the _invite_ event</br>- `expectedFloorRoles` specifies the Open-Floor role(s) the invited agent is expected to adopt on accepting the invite</br>- Added the `@roleRejected` reason token to _declineInvite_ for rejecting a requested role</br>- Clarified in section 1.14 that _acceptInvite_ confirms adoption of any roles requested via _expectedFloorRoles_</br>- Added new section 0.4.3 describing the _Archivist_ role and its expected services</br>- Renumbered the former section 0.4.3 'Managing the floor' to 0.4.4</br>- Added `archivist` role to the _assignedFloorRoles_ table in section 1.6.2</br>- Clarified that the `owner` role has a maximum cardinality of 1, matching `convener`</br>- Updated the _assignedFloorRoles_ table, section 1.6.2 prose, and the JSON schema to reflect the `owner` cardinality limit</br>- Added new section 8 'Outstanding Issues'</br>- Moved the new_conversation/delete_conversation TODO out of this changelog entry into the Outstanding Issues table</br>- Added an Outstanding Issues entry for normative use of HTTP in implementing OFP</br>- Added new section 4.1 defining minimal requirements for using HTTPS</br>- Renumbered sections 4-8 ('References' through 'Outstanding Issues') to 5-9</br>- Updated section 1.1 to point to the new section 4, while retaining the general multi-protocol principle</br>- Resolved the 'Normative use of HTTP' outstanding issue, referencing new section 4</br>- Added a new outstanding issue for the floor/user-proxy interface and conversation initiation</br>- Added a new Outstanding Issues entry, 'Further HTTP implementation details', covering response-body semantics, timeout/retry, NAT/firewall reachability, TLS, authentication, discovery, concurrency, size limits, and CORS</br>- Section 4.1: HTTP 200 response body is the agent's reply envelope</br>- Section 4.1: HTTP communication is synchronous only</br>- Updated the 'Further HTTP implementation details' outstanding issue|
+|1.1.1|2026.10.13|- Clarified the default utterance floor behaviour in section 2.2</br>- Added `owner` role to _assignedFloorRoles_ to identify the conversant with priority in defining conversation goals and floor ownership</br>- Added section 1.6.2 prose clarifying that `owner` is assigned at conversation start by the floor manager</br>- Updated Figure 7 example to show `owner` in _assignedFloorRoles_</br>- Added optional `expectedFloorRoles` parameter to the _invite_ event</br>- `expectedFloorRoles` specifies the Open-Floor role(s) the invited agent is expected to adopt on accepting the invite</br>- Added the `@roleRejected` reason token to _declineInvite_ for rejecting a requested role</br>- Clarified in section 1.14 that _acceptInvite_ confirms adoption of any roles requested via _expectedFloorRoles_</br>- Added new section 0.4.3 describing the _Archivist_ role and its expected services</br>- Renumbered the former section 0.4.3 'Managing the floor' to 0.4.4</br>- Added `archivist` role to the _assignedFloorRoles_ table in section 1.6.2</br>- Clarified that the `owner` role has a maximum cardinality of 1, matching `convener`</br>- Updated the _assignedFloorRoles_ table, section 1.6.2 prose, and the JSON schema to reflect the `owner` cardinality limit</br>- Added new section 8 'Outstanding Issues'</br>- Moved the new_conversation/delete_conversation TODO out of this changelog entry into the Outstanding Issues table</br>- Added an Outstanding Issues entry for normative use of HTTP in implementing OFP</br>- Added new section 4.1 defining minimal requirements for using HTTPS</br>- Renumbered sections 4-8 ('References' through 'Outstanding Issues') to 5-9</br>- Updated section 1.1 to point to the new section 4, while retaining the general multi-protocol principle</br>- Resolved the 'Normative use of HTTP' outstanding issue, referencing new section 4</br>- Added a new outstanding issue for the floor/user-proxy interface and conversation initiation</br>- Added a new Outstanding Issues entry, 'Further HTTP implementation details', covering response-body semantics, timeout/retry, NAT/firewall reachability, TLS, authentication, discovery, concurrency, size limits, and CORS</br>- Section 4.1: HTTP 200 response body is the agent's reply envelope</br>- Section 4.1: HTTP communication is synchronous only</br>- Updated the 'Further HTTP implementation details' outstanding issue|

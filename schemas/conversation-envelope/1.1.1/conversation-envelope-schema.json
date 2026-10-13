@@ -1,5 +1,5 @@
 {
-  "$id": "https://github.com/open-voice-interoperability/docs/tree/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json",
+  "$id": "https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "A representation of a 'dialogue envelope' - the universal data exchange format for an Open-Floor compliant interoperable agent.",
   "type": "object",
@@ -201,7 +201,7 @@
                       "type" : "object",
                       "properties" : {
                         "dialogEvent": {
-                          "ref": "https://github.com/open-voice-interoperability/lib-interop/tree/main/schemas/dialog-event/1.0.2/dialog-event-schema.json"
+                          "ref": "https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/dialog-event/1.0.2/dialog-event-schema.json"
                         }
                       },  
                       "additionalProperties": false
@@ -227,7 +227,7 @@
                           "description": "Optional list of dialog events containing some or all of the utterances in the dialog.",
                           "items": {
                             "type": "object",
-                            "ref": "https://github.com/open-voice-interoperability/lib-interop/tree/main/schemas/dialog-event/1.0.2/dialog-event-schema.json"
+                            "ref": "https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/dialog-event/1.0.2/dialog-event-schema.json"
                           }
                         },
                         "expectedFloorRoles": {
@@ -353,10 +353,10 @@
                       "type": "object",
                       "properties" : {
                         "servicingManifests": {
-                          "ref": "https://github.com/open-voice-interoperability/docs/tree/main/schemas/assistant-manifest/1.0.1/assistant-manifest-schema.json"
+                          "ref": "https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/assistant-manifest/1.0.1/assistant-manifest-schema.json"
                         },
                         "discoveryManifests": {
-                          "ref": "https://github.com/open-voice-interoperability/docs/tree/main/schemas/assistant-manifest/1.0.1/assistant-manifest-schema.json"
+                          "ref": "https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/assistant-manifest/1.0.1/assistant-manifest-schema.json"
                         }
                       },
                       "additionalProperties": false
