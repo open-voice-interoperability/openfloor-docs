@@ -12,8 +12,8 @@ The [**schemas**](schemas) folder contains JSON schemas in support of the specif
 ### Inter-Agent Messages (Envelopes)
 
 Latest Specification:
-[**Open Floor Inter-Agent Message Specification Version 1.1.0**](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/specifications/ConversationEnvelope/1.1.0/InteroperableConvEnvSpec.md) <br>
-Latest Schema: [Open Floor Inter-Agent Message Schema Version 1.1.0](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/conversation-envelope/1.1.0/conversation-envelope-schema.json)
+[**Open Floor Inter-Agent Message Specification Version 1.1.1**](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/specifications/ConversationEnvelope/1.1.1/InteroperableConvEnvSpec.md) <br>
+Latest Schema: [Open Floor Inter-Agent Message Schema Version 1.1.1](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/conversation-envelope/1.1.1/conversation-envelope-schema.json)
 
 The Open-Floor Conversation Envelope is a universal JSON structure whose purpose is to allow human or automatic agents (assistants) to interoperably participate in a conversation. 
 When coupled with a specific protocol, such as HTTPS, a dialog agent that can generate and send Conversation Envelopes is capable of inter-operating with any other Open-Floor-compliant agent, 
@@ -33,7 +33,7 @@ The Dialog Event is used as a component of other specifications such as the Enve
 Latest Specification: [**Open Floor Assistant Manifest Specification Version 1.0.1**](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/specifications/AssistantManifest/1.0.1/AssistantManifestSpec.md) <br>
 Latest Schema: [Open Floor Assistant Manifest Schema Version 1.0.1](https://github.com/open-voice-interoperability/openfloor-docs/blob/main/schemas/assistant-manifest/1.0.1/assistant-manifest-schema.json)
 
-The Assistant Manifest is a structured description of the key characteristics and capabilities of a conversational assistant that is associated with a unique serviceEndpoint. The manifest can be thought of as the curriculum vitae of the conversational agent and a public record of the services that it offers. It can be used, for example, by other agents or users to decide whether to invite a particular agent to join a conversation. In this regard, it is particularly relevant to discovery agents who provide services to other agents to help them find assistants to achieve certain tasks for them.
+The Assistant Manifest is a structured description of the key characteristics and capabilities of a conversational assistant that is identified by a unique speakerUri. The manifest can be thought of as the curriculum vitae of the conversational agent and a public record of the services that it offers. It can be used, for example, by other agents or users to decide whether to invite a particular agent to join a conversation. In this regard, it is particularly relevant to discovery agents who provide services to other agents to help them find assistants to achieve certain tasks for them.
 
 The Assistant Manifest is used as a component of other specifications such as the Envelope specification. It is not intended to stand alone.
 
@@ -97,7 +97,7 @@ The conversation **Envelope** contains the following:
     {
         "openFloor": {
             "schema": {
-                "version": "1.1.0"
+                "version": "1.1.1"
             },
             "conversation": {
                 "id": "conv:ffe67361-b072-40e7-ab70-9c83ab90509f",
